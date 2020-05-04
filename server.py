@@ -158,5 +158,6 @@ def registration():
     return render_template("landing.html", all_data_reversed=latest_questions)
 
 
+
 if __name__ == "__main__":
     app.run(debug=True)
