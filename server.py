@@ -36,12 +36,6 @@ def get_question_list():
     all_questions = data_manager.get_questions(order_by, order)
     return render_template("list.html", all_data_reversed=all_questions)
 
-#
-# @app.route("/list", methods=['GET', 'POST'])
-# def list():
-#     order_by = request.args.get('order_by')
-#     print(order_by)
-#     return "fuck"
 
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
 def q_id(question_id):
