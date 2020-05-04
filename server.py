@@ -18,10 +18,10 @@ def favicon():
 
 @app.route("/", methods=['GET', 'POST'])
 def get_five():
+    user_name = session.get('username')
     if request.method == 'GET':
-
         latest_questions = data_manager.get_latest_questions()
-        return render_template("landing.html", all_data_reversed=latest_questions)
+        return render_template("landing.html", all_data_reversed=latest_questions, user_name=user_name)
     elif request.method == "POST":
         search_text = request.form.get('search_text')
         return redirect(url_for('searched_question', search_text=search_text))
@@ -43,15 +43,15 @@ def login():
                 flash('Success, you are now logged in!')
             else:
                 error = "Invalid credentials!"
-                return render_template('landing.html', error=error)
+                return render_template('landing.html', error=error, user_name=username)
         else:
             error = "Invalid credentials!"
-            return render_template('landing.html/', error=error)
+            return render_template('landing.html/', error=error, user_name=username)
         return redirect(url_for('login'))
     latest_questions = data_manager.get_latest_questions()
     if 'username' in session:
-        return render_template('landing.html', all_data_reversed=latest_questions, user_name=session['username'])
-    return render_template('landing.html', all_data_reversed=latest_questions)
+        return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
+    return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
 
 
 @app.route("/search_result/<search_text>")
@@ -185,8 +185,14 @@ def registration():
         users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed}
         data_manager.insert_registration(users)
     latest_questions = data_manager.get_latest_questions()
-    return render_template("landing.html", all_data_reversed=latest_questions)
+    return render_template("landing.html", all_data_reversed=latest_questions, user_name=session.get('username'))
 
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 
 if __name__ == "__main__":

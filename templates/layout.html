@@ -18,9 +18,14 @@
         </ul>
     {% endif %}
 {% endwith %}
+
+{% if user_name %}
+    <p>You are logged in as: {{ user_name }}</p>
+{% endif %}
+
 <div class="content-wrapper">
     <header>
-        <h1 id="header-title"><img src="static/kacsa.jpg" alt="2 ducks in sunglasses" height="200px"></h1>
+        <h1 id="header-title"><img src="/static/kacsa.jpg" alt="2 ducks in sunglasses" height="200px"></h1>
     </header>
     <section>
         <h2 class="title text-center">{{ self.page_title() }}</h2>
@@ -28,7 +33,7 @@
         {% block content %}{% endblock %}
     </section>
 </div>
-{% include 'footer.html' %}
+{#{% include 'footer.html' %}#}
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 </body>
 

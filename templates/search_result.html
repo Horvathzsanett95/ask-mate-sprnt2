@@ -1,26 +1,25 @@
-
 {% extends "layout.html" %}
 
 
 {% block content %}
-<body>
+    <body>
     <h1>Questions</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Question</th>
-    </tr>
-    </thead>
-    <tbody>
+    <table>
+        <thead>
+        <tr>
+            <th>Question</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for question in search_result %}
 
-    <tr>
-        <td><a href="{{ url_for('q_id', question_id=question['id']) }}"> {{ question.message }}</a></td>
-    </tr>
+            <tr>
+                <td><a href="{{ url_for('q_id', question_id=question['id']) }}"> {{ question.message }}</a></td>
+            </tr>
         {% endfor %}
-    </tbody>
-</table>
-
-</body>
+        </tbody>
+    </table>
+    {% include 'footer.html' %}
+    </body>
 
 {% endblock %}

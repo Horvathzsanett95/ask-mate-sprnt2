@@ -7,8 +7,8 @@
 {#</head>#}
 {% extends "layout.html" %}
 
-{%  block content %}
-<body>
+{% block content %}
+    <body>
     <form method="POST">
         <label>Question Title</label><br>
         <label>
@@ -18,8 +18,8 @@
         <textarea rows="4" cols="50" required id="message" name="message"></textarea><br>
         <input type="submit" value="Submit question">
     </form>
-    
-</body>
+    {% include 'footer.html' %}
+    </body>
 {% endblock %}
 
 
