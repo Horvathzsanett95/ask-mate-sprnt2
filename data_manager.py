@@ -98,6 +98,17 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
     cursor.execute(query, {'q_id': question_id})
     return
 
+@database_common.connection_handler
+def insert_registration(cursor: RealDictCursor, users: dict):
+    query = """
+        INSERT INTO users (email, user_name, password)
+        VALUES (%(u_name)s, %(p_word)s, %(email)s);"""
+    cursor.execute(query, {
+        'u_name': users['user_name'],
+        'p_word': users['password'],
+        'email': users['email']
+    })
+    return
 
 @database_common.connection_handler
 def update_question(cursor: RealDictCursor, question_id: int, message: str, title: str):

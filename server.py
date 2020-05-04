@@ -3,6 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, send_from_
 import data_manager
 from collections import OrderedDict
 from datetime import datetime
+import bcrypt
 
 app = Flask(__name__)
 
@@ -141,6 +142,21 @@ def add_answer_comment(question_id, answer_id):
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
         print(question_id)
     return redirect(url_for('q_id', question_id=question_id))
+
+
+@app.route("/registration", methods=['GET', 'POST'])
+def registration():
+    if request.method == 'GET':
+        return render_template('registration.html')
+    if request.method == 'POST':
+        password = request.form.get('password')
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed = hashed.decode('utf-8')
+        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed}
+        data_manager.insert_registration(users)
+    latest_questions = data_manager.get_latest_questions()
+    return render_template("landing.html", all_data_reversed=latest_questions)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
