@@ -129,7 +129,7 @@ def edit(question_id):
 @app.route("/add_question",  methods=['GET', 'POST'])
 def add_question():
     if request.method == 'GET':
-        return render_template('add_question.html')
+        return render_template('add_question.html', user_name=session.get('username'))
     if request.method == 'POST':
         question = {'submission_time': datetime.now(), 'view_number': 0, 'vote_number': 0,
                     'title': request.form.get('title'), 'message': request.form.get('message'), 'image': None}
