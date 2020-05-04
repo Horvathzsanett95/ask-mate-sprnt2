@@ -28,9 +28,6 @@ def searched_question(search_text):
     search_result = data_manager.search_questions(search_text)
     return render_template('search_result.html', search_result=search_result)
 
-"""
-test
-"""
 
 @app.route("/list")
 def get_question_list():
