@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, send_from_directory
+from flask import Flask, render_template, url_for, request, redirect, send_from_directory, session, flash
 # import os
 import data_manager
 from collections import OrderedDict
@@ -22,6 +22,32 @@ def get_five():
     elif request.method == "POST":
         search_text = request.form.get('search_text')
         return redirect(url_for('searched_question', search_text=search_text))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    correct_password = False
+    if request.method == 'POST':
+        username = request.form.get('login_name')
+        password_entered = request.form.get('password')
+        user_data = data_manager.get_user(username)
+        if user_data:
+            hashed_password = user_data['password']
+            correct_password = data_manager.verify_password(password_entered, hashed_password)
+            if correct_password:
+                session['username'] = username
+                flash('Success, you are now logged in!')
+            else:
+                error = "Invalid credentials!"
+                return render_template('landing.html', error=error)
+        else:
+            error = "Invalid credentials!"
+            return render_template('landing.html/', error=error)
+        return redirect(url_for('index'))
+    if 'username' in session:
+        return render_template('landing.html', user_name=session['username'])
+    return render_template('landing.html')
 
 
 @app.route("/search_result/<search_text>")

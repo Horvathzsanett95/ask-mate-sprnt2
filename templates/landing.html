@@ -3,6 +3,23 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 {% block content %}
     <body>
+
+    {% if error %}
+        <p><strong>Error:</strong>{{ error }}</p>
+    {% endif %}
+
+    {% if user_name %}
+        <p>You are logged in already as: {{ user_name }}</p>
+    {% endif %}
+
+    <form action="/login" method="POST">
+        <label for="login_name"> Login Name </label>
+        <input type="text" name="login_name">
+        <label for="password"> Password </label>
+        <input type="text" name="password">
+        <input type="submit" value="Submit">
+    </form>
+
     <a href="/registration">Create an account</a>
     <h1>Questions</h1>
     <div class="list_wrapper">
