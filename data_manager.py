@@ -1,5 +1,6 @@
 from typing import List, Dict  # support for type hints
 
+import bcrypt
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 import database_common
@@ -102,7 +103,7 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
 def insert_registration(cursor: RealDictCursor, users: dict):
     query = """
         INSERT INTO users (email, user_name, password)
-        VALUES (%(u_name)s, %(p_word)s, %(email)s);"""
+        VALUES (%(email)s, %(u_name)s, %(p_word)s);"""
     cursor.execute(query, {
         'u_name': users['user_name'],
         'p_word': users['password'],
@@ -199,3 +200,16 @@ def search_questions(cursor: RealDictCursor, s_t) -> list:
         ORDER BY submission_time"""
     cursor.execute(query, {'search': search_expression})
     return cursor.fetchall()
+
+@database_common.connection_handler
+def get_user(cursor: RealDictCursor, username):
+    query = """
+        SELECT *
+        FROM users
+        WHERE user_name = %(usern)s"""
+    cursor.execute(query, {'usern': username})
+    return cursor.fetchone()
+
+def verify_password(plain_text_password, hashed_pw):
+    hashed_bytes_password = hashed_pw.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
