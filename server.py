@@ -7,6 +7,8 @@ import bcrypt
 
 app = Flask(__name__)
 
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
 #
 # @app.route('/favicon.ico')
 # def favicon():
@@ -44,7 +46,7 @@ def login():
         else:
             error = "Invalid credentials!"
             return render_template('landing.html/', error=error)
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     if 'username' in session:
         return render_template('landing.html', user_name=session['username'])
     return render_template('landing.html')

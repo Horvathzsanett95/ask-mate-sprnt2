@@ -1,5 +1,6 @@
 from typing import List, Dict  # support for type hints
 
+import bcrypt
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 import database_common
@@ -102,7 +103,7 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
 def insert_registration(cursor: RealDictCursor, users: dict):
     query = """
         INSERT INTO users (email, user_name, password)
-        VALUES (%(u_name)s, %(p_word)s, %(email)s);"""
+        VALUES (%(email)s, %(u_name)s, %(p_word)s);"""
     cursor.execute(query, {
         'u_name': users['user_name'],
         'p_word': users['password'],
@@ -205,8 +206,7 @@ def get_user(cursor: RealDictCursor, username):
     query = """
         SELECT *
         FROM users
-        WHERE user_name = %(usern)s
-        ORDER BY submission_time"""
+        WHERE user_name = %(usern)s"""
     cursor.execute(query, {'usern': username})
     return cursor.fetchone()
 
