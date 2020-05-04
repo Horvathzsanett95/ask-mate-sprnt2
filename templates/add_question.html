@@ -11,9 +11,11 @@
 <body>
     <form method="POST">
         <label>Question Title</label><br>
-        <textarea rows="4" cols="50" required name="title"></textarea><br>
-        <label>Question message</label><br>
-        <textarea rows="4" cols="50" required name="message"></textarea><br>
+        <label>
+            <textarea rows="4" cols="50" required name="title"></textarea>
+        </label><br>
+        <label for="message">Question message</label><br>
+        <textarea rows="4" cols="50" required id="message" name="message"></textarea><br>
         <input type="submit" value="Submit question">
     </form>
     

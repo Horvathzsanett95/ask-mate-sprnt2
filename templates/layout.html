@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <title>{% block page_title %}{% endblock %}Ask Mate</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
 <div class="content-wrapper">
     <header>
-        <h1 id="header-title"> <img src="static/kacsa.jpg" alt="2 ducks in sunglasses" height="200px"> </h1>
+        <h1 id="header-title"><img src="/static/kacsa.jpg" alt="2 ducks in sunglasses" height="180"></h1>
     </header>
     <section>
         <h2 class="title text-center">{{ self.page_title() }}</h2>

@@ -1,72 +1,58 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en" xmlns: xmlns:>#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#    <title>Question per ID</title>#}
-{#</head>#}
+{# This is the individual question page (plus Answers)#}
+
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="wrapper">
-<div class="question-block">
-    <strong><em>Question:</em></strong><br><br>
-    <strong>{{ title }}</strong>
-    {{ message }}
-    <br><br>
-    <a href="{{  url_for('add_question_comment',question_id= question_id) }}"> New Comment to question</a> <br> <br>
-    <p><strong>Comments to this question:</strong></p>
-    {% for comment in comments_questions %}
-    <p>{{ comment.message }}</p>
-    {% endfor %}
-</div>
-<div class="answer-block">
-    <strong><em>Answers:</em></strong><br>
+    <div class="wrapper">
 
-    {% for answer in answers %}
-        <div class="q">
-        <div class="r">
-        <p>{{ answer['message'] }} </p>
+        <div class="question-block">
+            <strong><em>Question:</em></strong><br><br>
+            <strong>{{ title }}</strong>
+            {{ message }}
+            <a href="{{ url_for('add_question_comment',question_id= question_id) }}"> New Comment to question</a> <br>
+            <br>
+            <p><strong>Comments to this question:</strong></p>
+            {% for comment in comments_questions %}
+                <p>{{ comment.message }}</p>
+            {% endfor %}
         </div>
+        <div class="answer-block">
+            <strong><em>Answers:</em></strong><br>
 
+            {% for answer in answers %}
+                <div class="q">
+                    <div class="r">
+                        <p>{{ answer['message'] }} </p>
+                    </div>
 
-        <div class="a">
-        <form action="{{ url_for('delete_answer', answer_id=answer['id']) }}" method="POST">
-            <input type="hidden" name="question_id" value={{ answer['question_id'] }}>
-            <input type="submit" name='btn' value="Delete answer"><a href="{{ url_for('add_answer_comment',
+                    <div class="a">
+                        <form action="{{ url_for('delete_answer', answer_id=answer['id']) }}" method="POST">
+                            <input type="hidden" name="question_id" value={{ answer['question_id'] }}>
+                            <input type="submit" name='btn' value="Delete answer"><a href="{{ url_for('add_answer_comment',
                 question_id= question_id, answer_id=answer['id'] ) }}">Add comment to this answer</a></form>
+                    </div>
+
+                    <div class="d">
+                        {% for comment in comments_answers %}
+                            {% if answer.id==comment.answer_id %}
+                                <p style="margin-left: 20px">{{ comment.message }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endfor %}
+
+            <form method="POST">
+                <strong><label for="comment">Your answer:</label></strong><br>
+                <textarea rows="4" cols="50" required id="comment" name="comment"></textarea><br>
+                <input type="submit" name='btn' value="Send answer"><br><br>
+            </form>
         </div>
+    </div>
+    <div class="buttons">
+        <form method="POST"><input type="submit" name='btn' value="Edit question">
+            <input type="submit" name='btn' value="Delete question"></form>
+    </div>
 
-        <div class="d">
-        {% for comment in comments_answers %}
-            {% if answer.id==comment.answer_id %}
-                <p style="margin-left: 20px">{{ comment.message }}</p>
-            {% endif %}
-        {% endfor %}
-        </div>
-        </div>
-
-
-    {% endfor %}
-
-    <form method="POST">
-        <strong><label for="comment">Your answer:</label></strong><br>
-        <textarea rows="4" cols="50" required name="comment"></textarea><br>
-        <input type="submit" name='btn' value="Send answer"><br><br>
-</div>
-</div>
-<div class="buttons">
-    </form>
-    <form method="POST"><input type="submit" name='btn' value="Edit question">
-        <input type="submit" name='btn' value="Delete question"></form>
-</div>
-
-{#    <a href="{{  url_for('add_answer_comment',question_id= question_id) }}"> New Comment to answer</a> <br> <br>#}
-{#    <p><strong>Comments to this answer:</strong></p>#}
-{#    {% for comment in comments_answers %}#}
-{#        {% if comment %}#}
-{#            <p>{{ comment.message }}</p>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-</body>
 {% endblock %}
