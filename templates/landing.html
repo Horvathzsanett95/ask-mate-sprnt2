@@ -1,23 +1,25 @@
 {% extends "layout.html" %}
 
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{#<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">#}
 {% block content %}
     <body>
-
-    {% if error %}
-        <p><strong>Error:</strong>{{ error }}</p>
-    {% endif %}
 
     {% if user_name %}
         <p>You are logged in already as: {{ user_name }}</p>
     {% endif %}
 
-    <form action="/login" method="POST">
+    {% if error %}
+        <p><strong>Error:</strong>{{ error }}</p>
+    {% endif %}
+
+    {% if not user_name %}
+        <form action="/login" method="POST">
         <label for="login_name"> Login Name </label>
-        <input type="text" name="login_name">
+        <input type="text" name="login_name" id="login_name">
         <label for="password"> Password </label>
-        <input type="text" name="password">
+        <input type="text" name="password" id="password">
         <input type="submit" value="Submit">
+    {% endif %}
     </form>
 
     <a href="/registration">Create an account</a>

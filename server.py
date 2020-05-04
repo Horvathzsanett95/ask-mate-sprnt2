@@ -10,15 +10,16 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-# @app.route('/favicon.ico')
-# def favicon():
-#     return send_from_directory(os.path.join(app.root_path, 'static'),
-#                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route("/", methods=['GET', 'POST'])
 def get_five():
     if request.method == 'GET':
+
         latest_questions = data_manager.get_latest_questions()
         return render_template("landing.html", all_data_reversed=latest_questions)
     elif request.method == "POST":
@@ -47,9 +48,10 @@ def login():
             error = "Invalid credentials!"
             return render_template('landing.html/', error=error)
         return redirect(url_for('login'))
+    latest_questions = data_manager.get_latest_questions()
     if 'username' in session:
-        return render_template('landing.html', user_name=session['username'])
-    return render_template('landing.html')
+        return render_template('landing.html', all_data_reversed=latest_questions, user_name=session['username'])
+    return render_template('landing.html', all_data_reversed=latest_questions)
 
 
 @app.route("/search_result/<search_text>")
