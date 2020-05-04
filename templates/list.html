@@ -1,43 +1,77 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>{% block page_title %}Main page{% endblock %} - Application process</title>#}
-{#    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">#}
-{#</head>#}
 {% extends "layout.html" %}
 
-
 {% block content %}
-<body>
+    <body>
+    <div>
+        <a href="/">HOME </a>
+    </div>
     <h1>Questions</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Voted</th>
-        <th>Title</th>
-        <th>Question</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for question in all_data_reversed %}
-    <tr>
-        <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
-        <td><a href="{{ url_for('vote_question_up', question_id=question['id']) }}">
-            <span style='font-size:15px;'>&#128077;</span>
-        </a><a href="{{ url_for('vote_question_down', question_id=question['id']) }}">
-            <span style='font-size:15px;'>&#128078;</span>
-
-        </a><br><br>{{ question['vote_number'] }}</td>
-        <td>{{ question["title"] }}</td>
-        <td>{{ question["message"] }}</td>
-    </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<a href="/add_question">Add a new question</a>
-</body>
+    <div class="list_wrapper">
+        <div class="sorting_block">
+            <form method="get">
+                <p>Sort by:</p>
+                <div>
+                    <input type="radio" name="order_by" id="submission_time" value="submission_time">
+                    <label for="submission_time">Submission time</label>
+                </div>
+                <div>
+                    <input type="radio" name="order_by" id="title" value="title">
+                    <label for="title">Title</label>
+                </div>
+                <div>
+                    <input type="radio" name="order_by" id="message" value="message">
+                    <label for="message">Question</label>
+                </div>
+                <div>
+                    <input type="radio" name="order_by" id="vote_number" value="vote_number">
+                    <label for="vote_number">Vote number</label>
+                </div>
+                <div>
+                    <input type="radio" name="order_by" id="view_number" value="view_number">
+                    <label for="view_number">Visited</label>
+                </div>
+                <br>
+                <div>
+                    <input type="checkbox" name="order_direction" id="order_direction" value="desc">
+                    <label for="order_direction">Descending?</label>
+                </div>
+                <br>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="question_list_block">
+            <table>
+                <thead>
+                <tr>
+                    <th class="qid">ID</th>
+                    <th class="voted">Vote</th>
+                    <th class="votes">no.</th>
+                    <th>Title</th>
+                    <th class="question">Question</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for question in all_data_reversed %}
+                    <tr>
+                        <td class="quid"><a
+                                href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                        <td class="voted"><a href="{{ url_for('vote_question_up', question_id=question['id']) }}">
+                            <span style='font-size:15px;'>&#8657;</span>
+                        </a><a href="{{ url_for('vote_question_down', question_id=question['id']) }}">
+                            <span style='font-size:15px;'>&#8659;</span>
+                        </a></td>
+                        <td class="votes">{{ question['vote_number'] }}</td>
+                        <td>{{ question["title"] }}</td>
+                        <td>{{ question["message"] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a href="/add_question">Add a new question</a>
+    </body>
 
 {% endblock %}

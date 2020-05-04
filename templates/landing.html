@@ -1,41 +1,43 @@
 {% extends "layout.html" %}
 
-
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 {% block content %}
-<body>
+    <body>
+    <a href="/registration">Create an account</a>
     <h1>Questions</h1>
-<form method="POST">
-    <input type="text" name="search_text">
-    <input type="submit" value="Search">
-</form>
-    <br>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Voted</th>
-        <th>Title</th>
-        <th>Question</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for question in all_data_reversed %}
-    <tr>
-        <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
-        <td><a href="{{ url_for('vote_question_up', question_id=question['id']) }}">
-            <span style='font-size:15px;'>&#128077;</span>
-        </a><a href="{{ url_for('vote_question_down', question_id=question['id']) }}">
-            <span style='font-size:15px;'>&#128078;</span>
-
-        </a><br><br>{{ question['vote_number'] }}</td>
-        <td>{{ question["title"] }}</td>
-        <td>{{ question["message"] }}</td>
-    </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<a href="/list">Show all questions</a>
-</body>
+    <div class="list_wrapper">
+        <div class="sorting_block">
+            <div>
+                <form method="POST">
+                    <input type="text" name="search_text">
+                    <input type="submit" value="Search">
+                </form>
+            </div>
+            <div>
+                <a href="/list">Show all questions</a>
+            </div>
+        </div>
+        <div class="question_list_block">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Question</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for question in all_data_reversed %}
+                    <tr>
+                        <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                        <td>{{ question["title"] }}</td>
+                        <td>{{ question["message"] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </body>
 
 {% endblock %}

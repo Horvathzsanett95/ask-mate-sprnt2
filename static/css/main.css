@@ -1,11 +1,28 @@
+
+.content-wrapper {
+    padding: 10px;
+}
+
 body {
     background-color: #ffdd84;
     color: #000000 ;
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
 }
 
-.content-wrapper {
-    padding: 5%;
+/* table stuff */
+table {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid rgb(200, 200, 200);
+    letter-spacing: 1px;
+    font-size: .8rem;
+    color: #010110;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif
+}
+
+tbody {
+    background-color: lightblue;
 }
 
 thead,
@@ -14,33 +31,46 @@ tfoot {
     color: #150101;
 }
 
-tbody {
-    background-color: lightblue;
-}
-
-table {
-    border-collapse: collapse;
-    border: 2px solid rgb(200, 200, 200);
-    letter-spacing: 1px;
-    font-size: 1rem;
-    color: #010110;
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif
-}
 td,
 th {
+    width: fit-content;
     border: 1px solid rgb(190, 190, 190);
     padding: 5px 10px;
 }
+/* table stuff vege */
 
-a:link {
-    text-decoration: none;
+.list_wrapper {
+    display: flex;
+}
+.question {
+    width: 60%;
+}
+.qid {
+    width: 5%;
+    text-align: center;
+}
+.votes {
+    width: 5%;
+    text-align: center;
+}
+.voted {
+    width: 8%;
+    text-align: center;
+}
+
+.sorting_block {
+    flex: 1;
+    margin: 20px;
+    padding: 10px;
+    background-color: #ffdd84;
+}
+
+.question_list_block {
+    flex: 4.5;
 }
 
 .wrapper {
     display: flex;
-}
-#header-title {
-    text-align: center;
 }
 .question-block {
     flex: 1;
@@ -58,8 +88,8 @@ a:link {
     margin: 20px;
 }
 
-a:visited {
-    text-decoration: none;
+#header-title {
+    text-align: center;
 }
 
 .r {
@@ -77,4 +107,10 @@ a:visited {
     display: block;
 }
 
+a:visited {
+    text-decoration: none;
+}
 
+a:link {
+    text-decoration: none;
+}

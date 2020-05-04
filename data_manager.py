@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict  # support for type hints
 
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
@@ -6,17 +6,27 @@ import database_common
 
 
 @database_common.connection_handler
-def get_questions(cursor: RealDictCursor) -> list:
-    query = """
-        SELECT *
-        FROM question
-        ORDER BY submission_time"""
-    cursor.execute(query)
+def get_questions(cursor: RealDictCursor, order_by_col="submission_time", order="asc") -> list:
+    which = {
+        'title': 5, 'submission_time': 2, 'message': 6, 'view_number': 3, 'vote_number': 4,
+        None: 2}
+    if order == "desc":
+        query = """
+            SELECT *
+            FROM question
+            ORDER BY %(ceca)s DESC"""
+    else:
+        query = """
+            SELECT *
+            FROM question
+            ORDER BY %(ceca)s"""
+    cursor.execute(query, {'ceca': which[order_by_col]})
+
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def get_vote_number(cursor: RealDictCursor, q_id:int) -> list:
+def get_vote_number(cursor: RealDictCursor, q_id: int) -> list:
     query = """
         SELECT vote_number
         FROM question
@@ -26,7 +36,7 @@ def get_vote_number(cursor: RealDictCursor, q_id:int) -> list:
 
 
 @database_common.connection_handler
-def write_vote_number(cursor: RealDictCursor, q_id:int, v_number) -> list:
+def write_vote_number(cursor: RealDictCursor, q_id: int, v_number):
     query = """
         UPDATE question SET vote_number = %(vote_number)s
         WHERE id = %(q_id)s"""
@@ -88,6 +98,17 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
     cursor.execute(query, {'q_id': question_id})
     return
 
+@database_common.connection_handler
+def insert_registration(cursor: RealDictCursor, users: dict):
+    query = """
+        INSERT INTO users (email, user_name, password)
+        VALUES (%(u_name)s, %(p_word)s, %(email)s);"""
+    cursor.execute(query, {
+        'u_name': users['user_name'],
+        'p_word': users['password'],
+        'email': users['email']
+    })
+    return
 
 @database_common.connection_handler
 def update_question(cursor: RealDictCursor, question_id: int, message: str, title: str):
@@ -129,6 +150,7 @@ def write_comment_to_question(cursor: RealDictCursor, q_id, s_time, ct):
     VALUES (%(q_id)s, %(s_time)s, %(ct)s);"""
     cursor.execute(query, {'q_id': q_id, 's_time': s_time, 'ct': ct})
 
+
 @database_common.connection_handler
 def get_question_comments(cursor: RealDictCursor, qid) -> list:
     query = """
@@ -137,6 +159,7 @@ def get_question_comments(cursor: RealDictCursor, qid) -> list:
         ORDER BY submission_time"""
     cursor.execute(query, {'qid': qid})
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def get_answer_comments(cursor: RealDictCursor) -> list:
@@ -165,9 +188,10 @@ def get_latest_questions(cursor: RealDictCursor) -> list:
     cursor.execute(query)
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def search_questions(cursor: RealDictCursor, s_t) -> list:
-    search_expression = '%' + s_t + '%'
+    search_expression = f"%{s_t}%"
     query = """
         SELECT *
         FROM question

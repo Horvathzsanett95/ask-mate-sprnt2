@@ -1,22 +1,14 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#    <title>Edit page</title>#}
-{#</head>#}
 {% extends "layout.html" %}
 
-
 {% block content %}
-<body>
+    <body>
     <form method="POST">
-        <label>Question Title</label><br>
-        <textarea rows="4" cols="50" required name="title">{{ title }}</textarea><br>
-        <label>Question message</label><br>
-        <textarea rows="4" cols="50" required name="message">{{ message }}</textarea><br>
+        <label for="title">Question Title</label><br>
+        <textarea rows="4" cols="50" required id="title" name="title">{{ title }}</textarea><br>
+        <label for="message">Question message</label><br>
+        <textarea rows="4" cols="50" required id="message" name="message">{{ message }}</textarea><br>
         <input type="submit" value="Edit question">
     </form>
-</body>
-    {% include 'footer.html' %}
+    </body>
+{% include 'footer.html' %}
 {% endblock %}

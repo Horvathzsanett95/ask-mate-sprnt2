@@ -1,18 +1,23 @@
-from flask import Flask, render_template, url_for, request, redirect
-import data_handler
+from flask import Flask, render_template, url_for, request, redirect, send_from_directory
+# import os
 import data_manager
 from collections import OrderedDict
 from datetime import datetime
-
-import time
+import bcrypt
 
 app = Flask(__name__)
+
+#
+# @app.route('/favicon.ico')
+# def favicon():
+#     return send_from_directory(os.path.join(app.root_path, 'static'),
+#                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route("/", methods=['GET', 'POST'])
 def get_five():
     if request.method == 'GET':
         latest_questions = data_manager.get_latest_questions()
-        # all_questions_reversed = data_handler.sorting(all_questions, sortkey='id', rev=True)
         return render_template("landing.html", all_data_reversed=latest_questions)
     elif request.method == "POST":
         search_text = request.form.get('search_text')
@@ -27,9 +32,10 @@ def searched_question(search_text):
 
 @app.route("/list")
 def get_question_list():
-    all_questions = data_manager.get_questions()
-    all_questions_reversed = data_handler.sorting(all_questions, sortkey='id', rev=True)
-    return render_template("list.html", all_data_reversed=all_questions_reversed)
+    order_by = request.args.get('order_by')
+    order = request.args.get('order_direction')
+    all_questions = data_manager.get_questions(order_by, order)
+    return render_template("list.html", all_data_reversed=all_questions)
 
 
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
@@ -136,6 +142,21 @@ def add_answer_comment(question_id, answer_id):
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
         print(question_id)
     return redirect(url_for('q_id', question_id=question_id))
+
+
+@app.route("/registration", methods=['GET', 'POST'])
+def registration():
+    if request.method == 'GET':
+        return render_template('registration.html')
+    if request.method == 'POST':
+        password = request.form.get('password')
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed = hashed.decode('utf-8')
+        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed}
+        data_manager.insert_registration(users)
+    latest_questions = data_manager.get_latest_questions()
+    return render_template("landing.html", all_data_reversed=latest_questions)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
