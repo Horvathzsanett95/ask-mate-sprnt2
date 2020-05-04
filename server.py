@@ -8,11 +8,11 @@ import time
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=['GET', 'POST'])
 def get_five():
     if request.method == 'GET':
         latest_questions = data_manager.get_latest_questions()
-        # all_questions_reversed = data_handler.sorting(all_questions, sortkey='id', rev=True)
         return render_template("landing.html", all_data_reversed=latest_questions)
     elif request.method == "POST":
         search_text = request.form.get('search_text')
@@ -136,6 +136,7 @@ def add_answer_comment(question_id, answer_id):
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
         print(question_id)
     return redirect(url_for('q_id', question_id=question_id))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
