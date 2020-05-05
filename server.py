@@ -207,7 +207,6 @@ def logout():
 @app.route('/user-profile')
 def user_profile():
     username = session.get('username')
-    print(username)
     if username is None:
         data = None
         return render_template('user-profile.html', user_id=None,
@@ -220,10 +219,20 @@ def user_profile():
         registration_time = user_data[0]['registration_time']
         email = user_data[0]['email']
         username = user_data[0]['user_name']
+        user_id = data_manager.get_id_by_username(username)
+        user_id = user_id[0]['id']
+        question_data = data_manager.question_number_by_user(user_id)
+        question_number = question_data[0]['count']
+        answer_data = data_manager.answer_number_by_user(user_id)
+        answer_number = answer_data[0]['count']
+        print(question_number)
+        print(answer_number)
         return render_template('user-profile.html', user_id=user_id,
                                registration_time=registration_time,
                                email=email,
-                               username=username)
+                               username=username,
+                               question_number=question_number,
+                               answer_number=answer_number)
 
 
 @app.route('/users')
