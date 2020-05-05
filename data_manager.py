@@ -232,7 +232,7 @@ def get_users(cursor: RealDictCursor):
     query = """
         SELECT id, registration_time, user_name
         FROM users"""
-    cursor.execute(queryquery, {'usern': username})
+    cursor.execute(query)
     return cursor.fetchall()
 
 
