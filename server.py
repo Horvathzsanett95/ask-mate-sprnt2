@@ -209,6 +209,5 @@ def users():
     return render_template("users.html", all_users=all_user_data)
 
 
-
 if __name__ == "__main__":
     app.run(debug=True)
