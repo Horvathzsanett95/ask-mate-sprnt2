@@ -100,12 +100,13 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
 @database_common.connection_handler
 def insert_registration(cursor: RealDictCursor, users: dict):
     query = """
-        INSERT INTO users (email, user_name, password)
-        VALUES (%(email)s, %(u_name)s, %(p_word)s);"""
+        INSERT INTO users (registration_time, email, user_name, password)
+        VALUES (%(registration_time)s, %(email)s, %(u_name)s, %(p_word)s);"""
     cursor.execute(query, {
         'u_name': users['user_name'],
         'p_word': users['password'],
-        'email': users['email']
+        'email': users['email'],
+        'registration_time': users['registration_time']
     })
     return
 
