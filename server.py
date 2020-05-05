@@ -133,10 +133,7 @@ def add_question():
         return render_template('add_question.html', user_name=session.get('username'))
     if request.method == 'POST':
         username = session['username']
-        print(username)
-        print('--')
         user_data = data_manager.get_user(username)
-        print(user_data['id'])
         question = {'submission_time': datetime.now(), 'view_number': 0, 'vote_number': 0,
                     'title': request.form.get('title'), 'message': request.form.get('message'), 'image': None,
                     'user_id': user_data['id']}
