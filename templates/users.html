@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<body>
+    <div class="users_table">
+        <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Registration Time</th>
+                    <th>Asked questions</th>
+                    <th>Answers</th>
+                    <th>Comments</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in all_users %}
+                    <tr>
+                        <td>{{ user['id'] }}</td>
+                        <td>{{ user['user_name'] }}</td>
+                        <td>{{ user['registration_time'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
+    </div>
+</body>
+{% endblock %}
