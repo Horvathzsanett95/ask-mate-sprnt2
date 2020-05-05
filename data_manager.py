@@ -155,11 +155,11 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: int):
 
 
 @database_common.connection_handler
-def write_comment_to_question(cursor: RealDictCursor, q_id, s_time, ct):
+def write_comment_to_question(cursor: RealDictCursor, q_id, s_time, ct, u_id):
     query = """
-    INSERT INTO comment(question_id, submission_time, message)
-    VALUES (%(q_id)s, %(s_time)s, %(ct)s);"""
-    cursor.execute(query, {'q_id': q_id, 's_time': s_time, 'ct': ct})
+    INSERT INTO comment(question_id, submission_time, message, user_id)
+    VALUES (%(q_id)s, %(s_time)s, %(ct)s, %(u_id)s);"""
+    cursor.execute(query, {'q_id': q_id, 's_time': s_time, 'ct': ct, 'u_id': u_id})
 
 
 @database_common.connection_handler
@@ -183,11 +183,11 @@ def get_answer_comments(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
-def write_comment_to_answer(cursor: RealDictCursor, a_id, s_time, ct):
+def write_comment_to_answer(cursor: RealDictCursor, a_id, s_time, ct, u_id):
     query = """
-    INSERT INTO comment(answer_id, submission_time, message)
-    VALUES (%(a_id)s, %(s_time)s, %(ct)s);"""
-    cursor.execute(query, {'a_id': a_id, 's_time': s_time, 'ct': ct})
+    INSERT INTO comment(answer_id, submission_time, message, user_id)
+    VALUES (%(a_id)s, %(s_time)s, %(ct)s, %(u_id)s);"""
+    cursor.execute(query, {'a_id': a_id, 's_time': s_time, 'ct': ct, 'u_id': u_id})
 
 
 @database_common.connection_handler

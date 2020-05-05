@@ -163,22 +163,25 @@ def vote_question_down(question_id):
 
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_question_comment(question_id):
+    username = session['username']
+    user_data = data_manager.get_user(username)
     if request.method == 'GET':
         return render_template('add_comment.html', user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
-        data_manager.write_comment_to_question(question_id, datetime.now(), comment)
+        data_manager.write_comment_to_question(question_id, datetime.now(), comment, user_data['id'])
     return redirect(url_for('q_id', question_id=question_id))
 
 
 @app.route("/answer/<question_id>/<answer_id>/new-comment", methods=['GET', 'POST'])
 def add_answer_comment(question_id, answer_id):
+    username = session['username']
+    user_data = data_manager.get_user(username)
     if request.method == 'GET':
         return render_template('add_answer_comment.html', answer_id=answer_id, user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
-        data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
-        print(question_id)
+        data_manager.write_comment_to_answer(answer_id, datetime.now(), comment, user_data['id'])
     return redirect(url_for('q_id', question_id=question_id))
 
 
