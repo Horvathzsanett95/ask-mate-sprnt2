@@ -200,6 +200,7 @@ def search_questions(cursor: RealDictCursor, s_t) -> list:
     cursor.execute(query, {'search': search_expression})
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def get_user(cursor: RealDictCursor, username):
     query = """
@@ -209,6 +210,16 @@ def get_user(cursor: RealDictCursor, username):
     cursor.execute(query, {'usern': username})
     return cursor.fetchone()
 
+
 def verify_password(plain_text_password, hashed_pw):
     hashed_bytes_password = hashed_pw.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_common.connection_handler
+def get_users(cursor: RealDictCursor):
+    query = """
+        SELECT id, registration_time, user_name
+        FROM users"""
+    cursor.execute(query)
+    return cursor.fetchall()

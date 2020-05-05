@@ -203,6 +203,11 @@ def user_profile():
     pass
 
 
+@app.route('/users')
+def users():
+    all_user_data = data_manager.get_users()
+    return render_template("users.html", all_users=all_user_data)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
