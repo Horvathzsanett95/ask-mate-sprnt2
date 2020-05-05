@@ -73,40 +73,43 @@ def get_question_list():
 def q_id(question_id):
     question = data_manager.get_question_by_id(question_id)
     if request.method == 'GET':
-        message = question['message']
-        title = question['title']
-        question_id = question['id']
-        answers = data_manager.get_answer_by_question_id(question_id)
-        if answers:
-            answer_id = answers[0]['id']
+        if 'username' in session:
+            message = question['message']
+            title = question['title']
+            question_id = question['id']
+            answers = data_manager.get_answer_by_question_id(question_id)
+            if answers:
+                answer_id = answers[0]['id']
+            else:
+                answer_id = 0
+            print(answer_id)
+            comments_questions = data_manager.get_question_comments(question_id)
+            comments_answers = data_manager.get_answer_comments()
+            print(comments_answers)
+            return render_template("question_id.html", message=message, title=title, answers=answers,
+                                   question_id=question_id, comments_questions=comments_questions,
+                                   comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
+        elif request.method == 'POST':
+            username = session['username']
+            user_data = data_manager.get_user(username)
+            if request.form["btn"] == "Send answer":
+                answer = OrderedDict()
+                answer['submission_time'] = datetime.now()
+                answer['vote_number'] =	0
+                answer['question_id'] = question_id
+                answer['message'] = request.form.get('comment')
+                answer['image'] = None
+                answer['user_id'] = user_data['id']
+                data_manager.add_answer(answer)
+                return redirect(url_for('get_question_list'))
+            elif request.form['btn'] == "Delete question":
+                data_manager.delete_question(question_id)
+                data_manager.delete_answer(question_id)
+                return redirect(url_for('get_question_list'))
+            elif request.form['btn'] == "Edit question":
+                return redirect(url_for('edit', question_id=question_id))
         else:
-            answer_id = 0
-        print(answer_id)
-        comments_questions = data_manager.get_question_comments(question_id)
-        comments_answers = data_manager.get_answer_comments()
-        print(comments_answers)
-        return render_template("question_id.html", message=message, title=title, answers=answers,
-                               question_id=question_id, comments_questions=comments_questions,
-                               comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
-    elif request.method == 'POST':
-        username = session['username']
-        user_data = data_manager.get_user(username)
-        if request.form["btn"] == "Send answer":
-            answer = OrderedDict()
-            answer['submission_time'] = datetime.now()
-            answer['vote_number'] =	0
-            answer['question_id'] = question_id
-            answer['message'] = request.form.get('comment')
-            answer['image'] = None
-            answer['user_id'] = user_data['id']
-            data_manager.add_answer(answer)
-            return redirect(url_for('get_question_list'))
-        elif request.form['btn'] == "Delete question":
-            data_manager.delete_question(question_id)
-            data_manager.delete_answer(question_id)
-            return redirect(url_for('get_question_list'))
-        elif request.form['btn'] == "Edit question":
-            return redirect(url_for('edit', question_id=question_id))
+            return redirect(url_for('login'))
 
 
 @app.route('/answer/<answer_id>/delete', methods=['POST'])
@@ -133,7 +136,10 @@ def edit(question_id):
 @app.route("/add_question",  methods=['GET', 'POST'])
 def add_question():
     if request.method == 'GET':
-        return render_template('add_question.html', user_name=session.get('username'))
+        if 'username' in session:
+            return render_template('add_question.html', user_name=session.get('username'))
+        else:
+            return redirect(url_for('login'))
     if request.method == 'POST':
         username = session['username']
         user_data = data_manager.get_user(username)
@@ -166,7 +172,10 @@ def add_question_comment(question_id):
     username = session['username']
     user_data = data_manager.get_user(username)
     if request.method == 'GET':
-        return render_template('add_comment.html', user_name=session.get('username'))
+        if 'username' in session:
+            return render_template('add_comment.html', user_name=session.get('username'))
+        else:
+            return redirect(url_for('login'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_question(question_id, datetime.now(), comment, user_data['id'])
@@ -178,7 +187,10 @@ def add_answer_comment(question_id, answer_id):
     username = session['username']
     user_data = data_manager.get_user(username)
     if request.method == 'GET':
-        return render_template('add_answer_comment.html', answer_id=answer_id, user_name=session.get('username'))
+        if 'username' in session:
+            return render_template('add_answer_comment.html', answer_id=answer_id, user_name=session.get('username'))
+        else:
+            return redirect(url_for('login'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment, user_data['id'])
