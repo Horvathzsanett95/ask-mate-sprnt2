@@ -71,13 +71,14 @@ def get_answer_by_question_id(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_answer(cursor: RealDictCursor, answer_details):
     query = """
-        INSERT INTO answer  (submission_time, vote_number, question_id, message)
-        VALUES(%(s_t)s, %(v_n)s, %(q_i)s, %(m_g)s);"""
+        INSERT INTO answer  (submission_time, vote_number, question_id, message, user_id)
+        VALUES(%(s_t)s, %(v_n)s, %(q_i)s, %(m_g)s, %(u_id)s);"""
     cursor.execute(query, {
         's_t': answer_details['submission_time'],
         'v_n': answer_details['vote_number'],
         'q_i': answer_details['question_id'],
-        'm_g': answer_details['message']
+        'm_g': answer_details['message'],
+        'u_id': answer_details['user_id']
     })
     return
 

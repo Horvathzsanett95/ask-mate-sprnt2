@@ -89,6 +89,8 @@ def q_id(question_id):
                                question_id=question_id, comments_questions=comments_questions,
                                comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
     elif request.method == 'POST':
+        username = session['username']
+        user_data = data_manager.get_user(username)
         if request.form["btn"] == "Send answer":
             answer = OrderedDict()
             answer['submission_time'] = datetime.now()
@@ -96,6 +98,7 @@ def q_id(question_id):
             answer['question_id'] = question_id
             answer['message'] = request.form.get('comment')
             answer['image'] = None
+            answer['user_id'] = user_data['id']
             data_manager.add_answer(answer)
             return redirect(url_for('get_question_list'))
         elif request.form['btn'] == "Delete question":
