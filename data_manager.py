@@ -222,6 +222,7 @@ def get_user(cursor: RealDictCursor, username):
     return cursor.fetchone()
 
 
+
 def verify_password(plain_text_password, hashed_pw):
     hashed_bytes_password = hashed_pw.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
