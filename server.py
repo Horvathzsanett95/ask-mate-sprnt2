@@ -132,8 +132,12 @@ def add_question():
     if request.method == 'GET':
         return render_template('add_question.html', user_name=session.get('username'))
     if request.method == 'POST':
+        username = session['username']
+        user_data = data_manager.get_user(username)
         question = {'submission_time': datetime.now(), 'view_number': 0, 'vote_number': 0,
-                    'title': request.form.get('title'), 'message': request.form.get('message'), 'image': None}
+                    'title': request.form.get('title'), 'message': request.form.get('message'), 'image': None,
+                    'user_id': user_data['id']}
+
         data_manager.insert_question(question)
         return redirect(url_for('get_question_list'))
 
