@@ -218,7 +218,6 @@ def user_profile():
                                username=None)
     else:
         user_data = data_manager.select_user_by_username(username)
-        user_id = user_data[0]['id']
         registration_time = user_data[0]['registration_time']
         email = user_data[0]['email']
         username = user_data[0]['user_name']
@@ -228,14 +227,16 @@ def user_profile():
         question_number = question_data[0]['count']
         answer_data = data_manager.answer_number_by_user(user_id)
         answer_number = answer_data[0]['count']
-        print(question_number)
-        print(answer_number)
+        question_per_user = data_manager.get_question_per_user_id(user_id)
+        answer_per_user = data_manager.get_answer_per_user_id(user_id)
+        print(answer_per_user)
         return render_template('user-profile.html', user_id=user_id,
                                registration_time=registration_time,
                                email=email,
                                username=username,
                                question_number=question_number,
-                               answer_number=answer_number)
+                               answer_number=answer_number,
+                               answer_per_user=answer_per_user, question_per_user=question_per_user)
 
 
 @app.route('/users')

@@ -238,6 +238,26 @@ def get_users(cursor: RealDictCursor):
 
 
 @database_common.connection_handler
+def get_question_per_user_id(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT id, title, message
+            FROM question
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_answer_per_user_id(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT id, message, question_id
+            FROM answer
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_id_by_username(cursor: RealDictCursor, username):
     query = """
             SELECT id
