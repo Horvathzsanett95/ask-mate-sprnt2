@@ -6,35 +6,74 @@
         <p>You are not logged in!</p>
     {% else %}
 
-<table style="width:40%">
-<tr>
-    <th>User details:</th>
-  </tr>
-<tr>
-    <td>Id:</td>
-    <td>{{ user_id }}</td>
-  </tr>
-<tr>
-    <td>Username:</td>
-    <td>{{ username }}</td>
-  </tr>
-<tr>
-    <td>Email:</td>
-    <td>{{ email }}</td>
-  </tr>
-<tr>
-    <td>Registration time:</td>
-    <td>{{ registration_time }}</td>
-  </tr>
-<tr>
-    <td>Added questions:</td>
-    <td>{{ question_number }}</td>
-  </tr>
-<tr>
-    <td>Answered questions:</td>
-    <td>{{ answer_number }}</td>
-  </tr>
-</table>
+        <table style="width:50%">
+            <thead>
+            <tr>
+                <th>User details:</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Id:</td>
+                <td>{{ user_id }}</td>
+            </tr>
+            <tr>
+                <td>Username:</td>
+                <td>{{ username }}</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>{{ email }}</td>
+            </tr>
+            <tr>
+                <td>Registration time:</td>
+                <td>{{ registration_time }}</td>
+            </tr>
+            <tr>
+                <td>Added questions:</td>
+                <td>{{ question_number }}</td>
+            </tr>
+            <tr>
+                <td>Answered questions:</td>
+                <td>{{ answer_number }}</td>
+            </tr>
+            </tbody>
+        </table><br>
     {% endif %}
-
+    <p>Questions by this user:</p>
+    <table style="width:50%">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>Title:</th>
+                <th>Message:</th>
+            </tr>
+            </thead>
+        {% for question in question_per_user %}
+            <tbody>
+            <tr>
+                <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                <td>{{ question['title'] }}</td>
+                <td>{{ question['message'] }}</td>
+            </tr>
+            </tbody>
+    {% endfor %}
+    </table><br>
+    <p>Answers by this user:</p>
+    <table style="width:50%">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>Message:</th>
+            </tr>
+            </thead>
+        {% for answer in answer_per_user %}
+            <tbody>
+            <tr>
+                <td><a href="{{ url_for('q_id', question_id=answer['question_id']) }}">{{ answer['id'] }}</a></td>
+                <td>{{ answer['message'] }}</td>
+            </tr>
+            </tbody>
+    {% endfor %}
+    </table>
 {% endblock %}
