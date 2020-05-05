@@ -110,6 +110,14 @@ def insert_registration(cursor: RealDictCursor, users: dict):
     })
     return
 
+
+@database_common.connection_handler
+def select_user_by_username(cursor: RealDictCursor, username):
+    query = """
+            SELECT * FROM users WHERE user_name = %(username)s;"""
+    cursor.execute(query, {'username': username})
+    return cursor.fetchall()
+
 @database_common.connection_handler
 def update_question(cursor: RealDictCursor, question_id: int, message: str, title: str):
     query = """
