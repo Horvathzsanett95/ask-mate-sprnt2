@@ -5,7 +5,7 @@ import database_common
 
 
 @database_common.connection_handler
-def get_questions(cursor: RealDictCursor, order_by_col="submission_time", order="asc") -> list:
+def get_questions(cursor: RealDictCursor, order_by_col="submission_time", order="desc") -> list:
     which = {
         'title': 5, 'submission_time': 2, 'message': 6, 'view_number': 3, 'vote_number': 4,
         None: 2}

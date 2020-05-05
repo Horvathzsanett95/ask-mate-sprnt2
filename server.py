@@ -47,9 +47,10 @@ def login():
         else:
             error = "Invalid credentials!"
             return render_template('landing.html/', error=error, user_name=username)
-        return redirect(url_for('login'))
+        return redirect(url_for('get_five'))
     latest_questions = data_manager.get_latest_questions()
     if 'username' in session:
+        flash('Please log out first, before logging in.')
         return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
     return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
 
@@ -192,6 +193,7 @@ def registration():
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
+    flash("You have logged out!")
     return redirect(url_for('login'))
 
 
