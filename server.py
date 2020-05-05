@@ -57,7 +57,7 @@ def login():
 @app.route("/search_result/<search_text>")
 def searched_question(search_text):
     search_result = data_manager.search_questions(search_text)
-    return render_template('search_result.html', search_result=search_result)
+    return render_template('search_result.html', search_result=search_result, user_name=session.get('username'))
 
 
 @app.route("/list")
@@ -86,7 +86,7 @@ def q_id(question_id):
         print(comments_answers)
         return render_template("question_id.html", message=message, title=title, answers=answers,
                                question_id=question_id, comments_questions=comments_questions,
-                               comments_answers=comments_answers, answer_id=answer_id)
+                               comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
     elif request.method == 'POST':
         if request.form["btn"] == "Send answer":
             answer = OrderedDict()
@@ -118,7 +118,7 @@ def edit(question_id):
     if request.method == 'GET':
         message = question['message']
         title = question['title']
-        return render_template('edit.html', message=message, title=title)
+        return render_template('edit.html', message=message, title=title, user_name=session.get('username'))
     elif request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
@@ -156,7 +156,7 @@ def vote_question_down(question_id):
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_question_comment(question_id):
     if request.method == 'GET':
-        return render_template('add_comment.html')
+        return render_template('add_comment.html', user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_question(question_id, datetime.now(), comment)
@@ -166,7 +166,7 @@ def add_question_comment(question_id):
 @app.route("/answer/<question_id>/<answer_id>/new-comment", methods=['GET', 'POST'])
 def add_answer_comment(question_id, answer_id):
     if request.method == 'GET':
-        return render_template('add_answer_comment.html', answer_id=answer_id)
+        return render_template('add_answer_comment.html', answer_id=answer_id, user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
