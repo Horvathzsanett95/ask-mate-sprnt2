@@ -205,7 +205,8 @@ def registration():
         password = request.form.get('password')
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hashed = hashed.decode('utf-8')
-        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed, 'registration_time': datetime.now()}
+        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed,
+                 'registration_time': datetime.now()}
         data_manager.insert_registration(users)
     latest_questions = data_manager.get_latest_questions()
     return render_template("landing.html", all_data_reversed=latest_questions, user_name=session.get('username'))

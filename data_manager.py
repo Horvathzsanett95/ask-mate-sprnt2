@@ -98,6 +98,7 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
     cursor.execute(query, {'q_id': question_id})
     return
 
+
 @database_common.connection_handler
 def insert_registration(cursor: RealDictCursor, users: dict):
     query = """
@@ -118,6 +119,7 @@ def select_user_by_username(cursor: RealDictCursor, username):
             SELECT * FROM users WHERE user_name = %(username)s;"""
     cursor.execute(query, {'username': username})
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def update_question(cursor: RealDictCursor, question_id: int, message: str, title: str):
@@ -222,7 +224,6 @@ def get_user(cursor: RealDictCursor, username):
     return cursor.fetchone()
 
 
-
 def verify_password(plain_text_password, hashed_pw):
     hashed_bytes_password = hashed_pw.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
@@ -284,4 +285,15 @@ def answer_number_by_user(cursor: RealDictCursor, user_id):
             FROM answer
             WHERE user_id = %(user_id)s"""
     cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_questioner(cursor: RealDictCursor, answer_id):
+    query = """
+            SELECT question.user_id
+            FROM question inner join answer
+                on question.id = answer.question_id
+            WHERE answer.id = %(a_id)s;"""
+    cursor.execute(query, {'a_id': answer_id})
     return cursor.fetchall()
