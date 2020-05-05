@@ -40,7 +40,7 @@ def login():
             correct_password = data_manager.verify_password(password_entered, hashed_password)
             if correct_password:
                 session['username'] = username
-                flash('Success, you are now logged in!')
+                # flash('Success, you are now logged in!')
             else:
                 error = "Invalid credentials!"
                 return render_template('landing.html', error=error, user_name=username)
