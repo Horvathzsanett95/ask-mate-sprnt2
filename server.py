@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, send_from_directory, session, flash
-# import os
+import os
 import data_manager
 from collections import OrderedDict
 from datetime import datetime
@@ -9,18 +9,19 @@ app = Flask(__name__)
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-#
-# @app.route('/favicon.ico')
-# def favicon():
-#     return send_from_directory(os.path.join(app.root_path, 'static'),
-#                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route("/", methods=['GET', 'POST'])
 def get_five():
+    user_name = session.get('username')
     if request.method == 'GET':
         latest_questions = data_manager.get_latest_questions()
-        return render_template("landing.html", all_data_reversed=latest_questions)
+        return render_template("landing.html", all_data_reversed=latest_questions, user_name=user_name)
     elif request.method == "POST":
         search_text = request.form.get('search_text')
         return redirect(url_for('searched_question', search_text=search_text))
@@ -39,23 +40,25 @@ def login():
             correct_password = data_manager.verify_password(password_entered, hashed_password)
             if correct_password:
                 session['username'] = username
-                flash('Success, you are now logged in!')
+                # flash('Success, you are now logged in!')
             else:
                 error = "Invalid credentials!"
-                return render_template('landing.html', error=error)
+                return render_template('landing.html', error=error, user_name=username)
         else:
             error = "Invalid credentials!"
-            return render_template('landing.html/', error=error)
-        return redirect(url_for('login'))
+            return render_template('landing.html/', error=error, user_name=username)
+        return redirect(url_for('get_five'))
+    latest_questions = data_manager.get_latest_questions()
     if 'username' in session:
-        return render_template('landing.html', user_name=session['username'])
-    return render_template('landing.html')
+        flash('Please log out first, before logging in.')
+        return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
+    return render_template('landing.html', all_data_reversed=latest_questions, user_name=session.get('username'))
 
 
 @app.route("/search_result/<search_text>")
 def searched_question(search_text):
     search_result = data_manager.search_questions(search_text)
-    return render_template('search_result.html', search_result=search_result)
+    return render_template('search_result.html', search_result=search_result, user_name=session.get('username'))
 
 
 @app.route("/list")
@@ -63,7 +66,7 @@ def get_question_list():
     order_by = request.args.get('order_by')
     order = request.args.get('order_direction')
     all_questions = data_manager.get_questions(order_by, order)
-    return render_template("list.html", all_data_reversed=all_questions)
+    return render_template("list.html", all_data_reversed=all_questions, user_name=session.get('username'))
 
 
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
@@ -84,7 +87,7 @@ def q_id(question_id):
         print(comments_answers)
         return render_template("question_id.html", message=message, title=title, answers=answers,
                                question_id=question_id, comments_questions=comments_questions,
-                               comments_answers=comments_answers, answer_id=answer_id)
+                               comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
     elif request.method == 'POST':
         if request.form["btn"] == "Send answer":
             answer = OrderedDict()
@@ -116,7 +119,7 @@ def edit(question_id):
     if request.method == 'GET':
         message = question['message']
         title = question['title']
-        return render_template('edit.html', message=message, title=title)
+        return render_template('edit.html', message=message, title=title, user_name=session.get('username'))
     elif request.method == 'POST':
         title = request.form.get('title')
         message = request.form.get('message')
@@ -127,7 +130,7 @@ def edit(question_id):
 @app.route("/add_question",  methods=['GET', 'POST'])
 def add_question():
     if request.method == 'GET':
-        return render_template('add_question.html')
+        return render_template('add_question.html', user_name=session.get('username'))
     if request.method == 'POST':
         question = {'submission_time': datetime.now(), 'view_number': 0, 'vote_number': 0,
                     'title': request.form.get('title'), 'message': request.form.get('message'), 'image': None}
@@ -154,7 +157,7 @@ def vote_question_down(question_id):
 @app.route("/question/<question_id>/new-comment", methods=['GET', 'POST'])
 def add_question_comment(question_id):
     if request.method == 'GET':
-        return render_template('add_comment.html')
+        return render_template('add_comment.html', user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_question(question_id, datetime.now(), comment)
@@ -164,7 +167,7 @@ def add_question_comment(question_id):
 @app.route("/answer/<question_id>/<answer_id>/new-comment", methods=['GET', 'POST'])
 def add_answer_comment(question_id, answer_id):
     if request.method == 'GET':
-        return render_template('add_answer_comment.html', answer_id=answer_id)
+        return render_template('add_answer_comment.html', answer_id=answer_id, user_name=session.get('username'))
     if request.method == 'POST':
         comment = request.form.get('comment')
         data_manager.write_comment_to_answer(answer_id, datetime.now(), comment)
@@ -183,8 +186,15 @@ def registration():
         users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed}
         data_manager.insert_registration(users)
     latest_questions = data_manager.get_latest_questions()
-    return render_template("landing.html", all_data_reversed=latest_questions)
+    return render_template("landing.html", all_data_reversed=latest_questions, user_name=session.get('username'))
 
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    flash("You have logged out!")
+    return redirect(url_for('login'))
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-<body>
-<form method="POST">
+    <body>
+    <form method="POST">
         <label>Email:</label>
         <textarea rows="1" cols="10" required name="email"></textarea><br>
         <label>Username:</label>
@@ -10,6 +10,6 @@
         <input type="password" id="password" required name="password"><br>
         <input type="submit" value="Submit registration">
     </form>
-</body>
-{% include 'footer.html' %}
+    </body>
+    {% include 'footer.html' %}
 {% endblock %}
