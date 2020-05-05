@@ -22,7 +22,12 @@
             {% for answer in answers %}
                 <div class="q">
                     <div class="r">
-                        <p>{{ answer['message'] }} </p>
+                        <p>{{ answer['message'] }}<span class="is_accepted">
+                            <input type="checkbox" name="accepted" id="accepted"
+                                    {% if unacceptable %}
+                                   disabled
+                                    {% endif %}>
+                            <label for="accepted">Accepted?</label></span></p>
                     </div>
 
                     <div class="a">

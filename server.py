@@ -40,7 +40,7 @@ def login():
             correct_password = data_manager.verify_password(password_entered, hashed_password)
             if correct_password:
                 session['username'] = username
-                # flash('Success, you are now logged in!')
+                session['user_id'] = user_data['id']
             else:
                 error = "Invalid credentials!"
                 return render_template('landing.html', error=error, user_name=username)
@@ -72,23 +72,27 @@ def get_question_list():
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
 def q_id(question_id):
     question = data_manager.get_question_by_id(question_id)
+    questioner = data_manager.get_questioner(question_id)
     if request.method == 'GET':
         if 'username' in session:
+            unacceptable = True
             message = question['message']
             title = question['title']
-            question_id = question['id']
+            # question_id = question['id']  #???  question_id megvan parameterben
             answers = data_manager.get_answer_by_question_id(question_id)
             if answers:
                 answer_id = answers[0]['id']
             else:
                 answer_id = 0
-            print(answer_id)
+            if session.get('user_id') == questioner:
+                unacceptable = False
             comments_questions = data_manager.get_question_comments(question_id)
             comments_answers = data_manager.get_answer_comments()
             print(comments_answers)
             return render_template("question_id.html", message=message, title=title, answers=answers,
                                    question_id=question_id, comments_questions=comments_questions,
-                                   comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
+                                   comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
+                                   user_name=session.get('username'))
         elif request.method == 'POST':
             username = session['username']
             user_data = data_manager.get_user(username)
@@ -100,6 +104,7 @@ def q_id(question_id):
                 answer['message'] = request.form.get('comment')
                 answer['image'] = None
                 answer['user_id'] = user_data['id']
+                answer['accepted'] = None
                 data_manager.add_answer(answer)
                 return redirect(url_for('get_question_list'))
             elif request.form['btn'] == "Delete question":

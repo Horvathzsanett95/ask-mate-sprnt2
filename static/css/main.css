@@ -87,6 +87,11 @@ th {
 .buttons {
     margin: 20px;
 }
+span.is_accepted {
+    color: dimgrey;
+    font-stretch: condensed;
+    font-size: smaller;
+}
 
 #header-title {
     text-align: center;

@@ -297,3 +297,13 @@ def get_questioner(cursor: RealDictCursor, answer_id):
             WHERE answer.id = %(a_id)s;"""
     cursor.execute(query, {'a_id': answer_id})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_questioner(cursor: RealDictCursor, question_id):
+    query = """ SELECT users.id FROM users
+                INNER JOIN question q on users.id = q.user_id
+                WHERE q.id = %(quid)s"""
+    cursor.execute(query, {'quid': question_id})
+    return cursor.fetchone()
+
