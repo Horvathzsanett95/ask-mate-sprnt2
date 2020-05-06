@@ -112,7 +112,6 @@ def q_id(question_id):
             return redirect(url_for('edit', question_id=question_id))
 
 
-
 @app.route('/answer/<answer_id>/delete', methods=['POST'])
 def delete_answer(answer_id):
     question_id = request.form.get('question_id')
