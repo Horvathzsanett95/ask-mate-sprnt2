@@ -265,6 +265,16 @@ def get_answer_per_user_id(cursor: RealDictCursor, user_id):
 
 
 @database_common.connection_handler
+def get_comment_per_user_id(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT id, message
+            FROM comment
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_id_by_username(cursor: RealDictCursor, username):
     query = """
             SELECT id
@@ -272,6 +282,17 @@ def get_id_by_username(cursor: RealDictCursor, username):
             WHERE user_name = %(usern)s"""
     cursor.execute(query, {'usern': username})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def comment_number_by_user(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT COUNT(user_id)
+            FROM comment
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
 
 
 @database_common.connection_handler
