@@ -99,7 +99,6 @@ def q_id(question_id):
     elif request.method == 'POST':
         username = session['username']
         user_data = data_manager.get_user(username)
-        # print(user_data)
         if request.form["btn"] == "Send answer":
             answer = OrderedDict()
             answer['submission_time'] = datetime.now()
@@ -262,19 +261,22 @@ def user_profile():
         answer_number = answer_data[0]['count']
         question_per_user = data_manager.get_question_per_user_id(user_id)
         answer_per_user = data_manager.get_answer_per_user_id(user_id)
-        print(answer_per_user)
+        comment_data = data_manager.comment_number_by_user(user_id)
+        comment_number = comment_data[0]['count']
+        comment_per_user = data_manager.get_comment_per_user_id(user_id)
         return render_template('user-profile.html', user_id=user_id,
                                registration_time=registration_time,
                                email=email,
                                username=username,
                                question_number=question_number,
-                               answer_number=answer_number,
-                               answer_per_user=answer_per_user, question_per_user=question_per_user)
+                               answer_number=answer_number, comment_per_user=comment_per_user,
+                               answer_per_user=answer_per_user, question_per_user=question_per_user, comment_number=comment_number)
 
 
 @app.route('/users')
 def users():
     all_user_data = data_manager.get_users()
+    print(all_user_data)
     return render_template("users.html", all_users=all_user_data)
 
 

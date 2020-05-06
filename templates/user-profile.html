@@ -5,13 +5,8 @@
     {% if email == None %}
         <p>You are not logged in!</p>
     {% else %}
-
+<p>User details:</p>
         <table style="width:50%">
-            <thead>
-            <tr>
-                <th>User details:</th>
-            </tr>
-            </thead>
             <tbody>
             <tr>
                 <td>Id:</td>
@@ -37,9 +32,12 @@
                 <td>Answered questions:</td>
                 <td>{{ answer_number }}</td>
             </tr>
+            <tr>
+                <td>Comments:</td>
+                <td>{{ comment_number }}</td>
+            </tr>
             </tbody>
         </table><br>
-
     <p>Questions by this user:</p>
     <table style="width:50%">
             <thead>
@@ -49,24 +47,24 @@
                 <th>Message:</th>
             </tr>
             </thead>
-        {% for question in question_per_user %}
-            <tbody>
-            <tr>
-                <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
-                <td>{{ question['title'] }}</td>
-                <td>{{ question['message'] }}</td>
-            </tr>
-            </tbody>
-    {% endfor %}
-    </table><br>
-    <p>Answers by this user:</p>
-    <table style="width:50%">
-            <thead>
-            <tr>
-                <th>ID:</th>
-                <th>Message:</th>
-            </tr>
-            </thead>
+            {% for question in question_per_user %}
+                <tbody>
+                <tr>
+                    <td><a href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                    <td>{{ question['title'] }}</td>
+                    <td>{{ question['message'] }}</td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table><br>
+        <p>Answers by this user:</p>
+        <table style="width:50%">
+        <thead>
+        <tr>
+            <th>ID:</th>
+            <th>Message:</th>
+        </tr>
+        </thead>
         {% for answer in answer_per_user %}
             <tbody>
             <tr>
@@ -74,7 +72,24 @@
                 <td>{{ answer['message'] }}</td>
             </tr>
             </tbody>
-    {% endfor %}
+        {% endfor %}
+        </table><br>
+        <p>Comments by this user:</p>
+        <table style="width:50%">
+        <thead>
+        <tr>
+            <th>ID:</th>
+            <th>Message:</th>
+        </tr>
+        </thead>
+        {% for comment in comment_per_user %}
+            <tbody>
+            <tr>
+                <td>{{ comment['id'] }}</td>
+                <td>{{ comment['message'] }}</td>
+            </tr>
+            </tbody>
+        {% endfor %}
     {% endif %}
-    </table>
+</table>
 {% endblock %}

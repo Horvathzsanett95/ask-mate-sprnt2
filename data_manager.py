@@ -262,8 +262,15 @@ def verify_password(plain_text_password, hashed_pw):
 @database_common.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
-        SELECT id, registration_time, user_name
-        FROM users"""
+        SELECT users.id, registration_time, user_name, 
+        COUNT(DISTINCT question.id) AS question_count,
+        COUNT(DISTINCT answer.id) AS answer_count,
+        COUNT(DISTINCT comment.id) AS comment_count
+        FROM users
+        LEFT JOIN question ON question.user_id = users.id
+        LEFT JOIN answer ON answer.user_id = users.id
+        LEFT JOIN comment ON comment.user_id = users.id
+        GROUP BY users.id"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -289,6 +296,16 @@ def get_answer_per_user_id(cursor: RealDictCursor, user_id):
 
 
 @database_common.connection_handler
+def get_comment_per_user_id(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT id, message
+            FROM comment
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_id_by_username(cursor: RealDictCursor, username):
     query = """
             SELECT id
@@ -296,6 +313,17 @@ def get_id_by_username(cursor: RealDictCursor, username):
             WHERE user_name = %(usern)s"""
     cursor.execute(query, {'usern': username})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def comment_number_by_user(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT COUNT(user_id)
+            FROM comment
+            WHERE user_id = %(user_id)s"""
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
 
 
 @database_common.connection_handler
@@ -315,4 +343,15 @@ def answer_number_by_user(cursor: RealDictCursor, user_id):
             FROM answer
             WHERE user_id = %(user_id)s"""
     cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def bind_answer(cursor: RealDictCursor):
+    query = """
+            SELECT user_id, COUNT(id) 
+            FROM answer
+            GROUP BY user_id
+            ORDER BY user_id"""
+    cursor.execute(query)
     return cursor.fetchall()
