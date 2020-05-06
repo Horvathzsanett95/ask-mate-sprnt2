@@ -91,6 +91,9 @@ span.is_accepted {
     color: dimgrey;
     font-stretch: condensed;
     font-size: smaller;
+    display: inline-block;
+    /*border: 1px solid rebeccapurple;*/
+    margin-left: 5px;
 }
 
 #header-title {
