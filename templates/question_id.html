@@ -6,7 +6,7 @@
     <div class="wrapper">
 
         <div class="question-block">
-            <strong><em>Question:</em></strong><br><br>
+            <strong><em>Question: {{ question_id }}</em></strong> (user: {{ question_user }}<br><br>
             <strong>{{ title }}</strong>
             {{ message }}
             <a href="{{ url_for('add_question_comment',question_id= question_id) }}"> New Comment to question</a> <br>
