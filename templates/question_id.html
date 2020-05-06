@@ -26,6 +26,9 @@
                             <input type="checkbox" name="accepted" id="accepted"
                                     {% if unacceptable %}
                                    disabled
+                                    {% endif %}
+                                    {% if answer['accepted'] %}
+                                   checked
                                     {% endif %}>
                             <label for="accepted">Accepted?</label></span></p>
                     </div>
