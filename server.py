@@ -40,7 +40,7 @@ def login():
             correct_password = data_manager.verify_password(password_entered, hashed_password)
             if correct_password:
                 session['username'] = username
-                # flash('Success, you are now logged in!')
+                session['user_id'] = user_data['id']
             else:
                 error = "Invalid credentials!"
                 return render_template('landing.html', error=error, user_name=username)
@@ -72,25 +72,30 @@ def get_question_list():
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
 def q_id(question_id):
     question = data_manager.get_question_by_id(question_id)
+    # questioner = data_manager.get_questioner(question_id)
+    questioner = question['user_id']
     if request.method == 'GET':
         if 'username' in session:
+            unacceptable = True
             message = question['message']
             title = question['title']
-            question_id = question['id']
+            question_id = question['id']  #???  question_id megvan parameterben
             answers = data_manager.get_answer_by_question_id(question_id)
             if answers:
                 answer_id = answers[0]['id']
             else:
                 answer_id = 0
-            print(answer_id)
+            if session.get('user_id') == questioner:
+                unacceptable = False
             comments_questions = data_manager.get_question_comments(question_id)
             comments_answers = data_manager.get_answer_comments()
-            print(comments_answers)
+            question_user = data_manager.get_user_by_id(question['user_id'])  # this is to show who asked the question
+            q_user = question_user[0]['user_name'] # this is to show who asked the question
+            # print(comments_answers)
             return render_template("question_id.html", message=message, title=title, answers=answers,
                                    question_id=question_id, comments_questions=comments_questions,
-                                   comments_answers=comments_answers, answer_id=answer_id, user_name=session.get('username'))
-        else:
-            return redirect(url_for('login'))
+                                   comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
+                                   user_name=session.get('username'), question_user=q_user, a_accepted=False)
     elif request.method == 'POST':
         username = session['username']
         user_data = data_manager.get_user(username)
@@ -110,27 +115,21 @@ def q_id(question_id):
             return redirect(url_for('get_question_list'))
         elif request.form['btn'] == "Edit question":
             return redirect(url_for('edit', question_id=question_id))
-        elif request.method == 'POST':
-            username = session['username']
-            user_data = data_manager.get_user(username)
-            if request.form["btn"] == "Send answer":
-                answer = OrderedDict()
-                answer['submission_time'] = datetime.now()
-                answer['vote_number'] =	0
-                answer['question_id'] = question_id
-                answer['message'] = request.form.get('comment')
-                answer['image'] = None
-                answer['user_id'] = user_data['id']
-                data_manager.add_answer(answer)
-                return redirect(url_for('get_question_list'))
-            elif request.form['btn'] == "Delete question":
-                data_manager.delete_question(question_id)
-                data_manager.delete_answer(question_id)
-                return redirect(url_for('get_question_list'))
-            elif request.form['btn'] == "Edit question":
-                return redirect(url_for('edit', question_id=question_id))
-        else:
-            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/accept_answer/<answer_id>/<question_id>', methods = ['POST'])
+def accept_answer(answer_id, question_id):
+    accepted_dict = data_manager.get_accepted_by_answer_id(answer_id)
+    accepted_bool = accepted_dict[0]['accepted']
+    if accepted_bool is False:
+        accepted_bool = True
+    else:
+        accepted_bool = False
+    data_manager.update_answer_by_id(answer_id, accepted_bool)
+    return redirect(url_for('q_id', question_id=question_id))
+
 
 @app.route('/answer/<answer_id>/delete', methods=['POST'])
 def delete_answer(answer_id):
@@ -225,7 +224,8 @@ def registration():
         password = request.form.get('password')
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hashed = hashed.decode('utf-8')
-        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed, 'registration_time': datetime.now()}
+        users = {'email': request.form.get('email'), 'user_name': request.form.get('user_name'), 'password': hashed,
+                 'registration_time': datetime.now()}
         data_manager.insert_registration(users)
     latest_questions = data_manager.get_latest_questions()
     return render_template("landing.html", all_data_reversed=latest_questions, user_name=session.get('username'))

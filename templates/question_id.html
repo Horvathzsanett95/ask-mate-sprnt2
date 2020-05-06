@@ -6,7 +6,7 @@
     <div class="wrapper">
 
         <div class="question-block">
-            <strong><em>Question:</em></strong><br><br>
+            <strong><em>Question: {{ question_id }}</em></strong> ({{ question_user }})<br><br>
             <strong>{{ title }}</strong>
             {{ message }}
             <a href="{{ url_for('add_question_comment',question_id= question_id) }}"> New Comment to question</a> <br>
@@ -22,14 +22,20 @@
             {% for answer in answers %}
                 <div class="q">
                     <div class="r">
-                        <p>{{ answer['message'] }} </p>
+                        <p>{{ answer['message'] }}</p>
+                        <form action="{{ url_for('accept_answer', answer_id=answer['id'], question_id=question_id) }}"
+                              method="POST">
+                            <input {% if unacceptable %} disabled="disabled" {% endif %}class="favourite styled"
+                                                         type="submit" name="btn" {% if answer['accepted'] == False %}
+                                                         value="AcceptAnswer" {% else %}
+                                                         value="RevertAnswerAccept" {% endif %}></form>
                     </div>
-
                     <div class="a">
                         <form action="{{ url_for('delete_answer', answer_id=answer['id']) }}" method="POST">
                             <input type="hidden" name="question_id" value={{ answer['question_id'] }}>
-                            <input type="submit" name='btn' value="Delete answer"><a href="{{ url_for('add_answer_comment',
-                question_id= question_id, answer_id=answer['id'] ) }}">Add comment to this answer</a></form>
+                            <input type="submit" name='btn' value="Delete answer">
+                            <a href="{{ url_for('add_answer_comment', question_id= question_id,
+                             answer_id=answer['id'] ) }}">Add comment to this answer</a></form>
                     </div>
 
                     <div class="d">

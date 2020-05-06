@@ -5,10 +5,12 @@ import database_common
 
 
 @database_common.connection_handler
-def get_questions(cursor: RealDictCursor, order_by_col="submission_time", order="desc") -> list:
+def get_questions(cursor: RealDictCursor, order_by_col=2, order="asc") -> list:
     which = {
         'title': 5, 'submission_time': 2, 'message': 6, 'view_number': 3, 'vote_number': 4,
         None: 2}
+    if not order:
+        order = "desc"
     if order == "desc":
         query = """
             SELECT *
@@ -61,6 +63,15 @@ def get_answers(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
+def get_accepted_by_answer_id(cursor: RealDictCursor, answer_id) -> list:
+    query = """
+        SELECT accepted
+        FROM answer WHERE id = %(aid)s;"""
+    cursor.execute(query, {'aid': answer_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_answer_by_question_id(cursor: RealDictCursor, question_id):
     query = """
         SELECT * FROM answer WHERE question_id = %(qid)s;"""
@@ -98,6 +109,7 @@ def delete_answer(cursor: RealDictCursor, question_id: int):
     cursor.execute(query, {'q_id': question_id})
     return
 
+
 @database_common.connection_handler
 def insert_registration(cursor: RealDictCursor, users: dict):
     query = """
@@ -118,6 +130,7 @@ def select_user_by_username(cursor: RealDictCursor, username):
             SELECT * FROM users WHERE user_name = %(username)s;"""
     cursor.execute(query, {'username': username})
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def update_question(cursor: RealDictCursor, question_id: int, message: str, title: str):
@@ -151,6 +164,15 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: int):
     query = """
         DELETE FROM answer WHERE id = %(aid)s;"""
     cursor.execute(query, {'aid': answer_id})
+    return
+
+
+@database_common.connection_handler
+def update_answer_by_id(cursor: RealDictCursor, answer_id: int, accepted):
+
+    query = """
+        UPDATE answer SET accepted = %(acp)s WHERE id = %(aid)s;"""
+    cursor.execute(query, {'acp': accepted, 'aid': answer_id})
     return
 
 
@@ -221,6 +243,15 @@ def get_user(cursor: RealDictCursor, username):
     cursor.execute(query, {'usern': username})
     return cursor.fetchone()
 
+
+@database_common.connection_handler
+def get_user_by_id(cursor: RealDictCursor, user_id):
+    query = """
+        SELECT user_name
+        FROM users
+        WHERE id = %(usi)s"""
+    cursor.execute(query, {'usi': user_id})
+    return cursor.fetchall()
 
 
 def verify_password(plain_text_password, hashed_pw):
@@ -313,6 +344,7 @@ def answer_number_by_user(cursor: RealDictCursor, user_id):
             WHERE user_id = %(user_id)s"""
     cursor.execute(query, {'user_id': user_id})
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def bind_answer(cursor: RealDictCursor):
