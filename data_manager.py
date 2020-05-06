@@ -285,3 +285,13 @@ def answer_number_by_user(cursor: RealDictCursor, user_id):
             WHERE user_id = %(user_id)s"""
     cursor.execute(query, {'user_id': user_id})
     return cursor.fetchall()
+
+@database_common.connection_handler
+def bind_answer(cursor: RealDictCursor):
+    query = """
+            SELECT user_id, COUNT(id) 
+            FROM answer
+            GROUP BY user_id
+            ORDER BY user_id"""
+    cursor.execute(query)
+    return cursor.fetchall()
