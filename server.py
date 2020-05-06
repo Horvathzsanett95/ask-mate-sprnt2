@@ -275,8 +275,8 @@ def user_profile():
 @app.route('/users')
 def users():
     all_user_data = data_manager.get_users()
-    users_answer = data_manager.bind_answer()
-    return render_template("users.html", all_users=all_user_data, user_answer=users_answer)
+    print(all_user_data)
+    return render_template("users.html", all_users=all_user_data)
 
 
 if __name__ == "__main__":

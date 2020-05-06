@@ -14,18 +14,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for answer in user_answer %}
                 {% for user in all_users %}
                     <tr>
                         <td>{{ user['id'] }}</td>
                         <td>{{ user['user_name'] }}</td>
                         <td>{{ user['registration_time'] }}</td>
-                        <td></td>
-                        {% if answer['user_id'] == user['id'] %}
-                        <td>{{ answer['count'] }}</td>
+                        <td>{{ user['question_count'] }}</td>
+                        <td>{{ user['answer_count'] }}</td>
+                        <td>{{ user['comment_count'] }}</td>
                     </tr>
-                {% endif %}
-                {% endfor %}
                 {% endfor %}
                 </tbody>
         </table>

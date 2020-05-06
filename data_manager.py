@@ -231,8 +231,15 @@ def verify_password(plain_text_password, hashed_pw):
 @database_common.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
-        SELECT id, registration_time, user_name
-        FROM users"""
+        SELECT users.id, registration_time, user_name, 
+        COUNT(DISTINCT question.id) AS question_count,
+        COUNT(DISTINCT answer.id) AS answer_count,
+        COUNT(DISTINCT comment.id) AS comment_count
+        FROM users
+        LEFT JOIN question ON question.user_id = users.id
+        LEFT JOIN answer ON answer.user_id = users.id
+        LEFT JOIN comment ON comment.user_id = users.id
+        GROUP BY users.id"""
     cursor.execute(query)
     return cursor.fetchall()
 
