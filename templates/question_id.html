@@ -22,7 +22,7 @@
             {% for answer in answers %}
                 <div class="q">
                     <div class="r">
-                        <p>{{ answer['message'] }}<span class="is_accepted">
+                        <p>{{ answer['message'] }}</p><span class="is_accepted">
                             <input type="checkbox" name="accepted" id="accepted"
                                     {% if unacceptable %}
                                    disabled
@@ -30,14 +30,16 @@
                                     {% if answer['accepted'] %}
                                    checked
                                     {% endif %}>
-                            <label for="accepted">Accepted?</label></span></p>
+                            <label for="accepted">Accepted?</label>{{ answer['accepted'] }}</span>
+                        <form action="{{ url_for('accept_answer', answer_id=answer['id'], question_id=question_id) }}" method="POST">
+                            <input type="submit" name="btn" value="Accept"></form>
                     </div>
-
                     <div class="a">
                         <form action="{{ url_for('delete_answer', answer_id=answer['id']) }}" method="POST">
                             <input type="hidden" name="question_id" value={{ answer['question_id'] }}>
-                            <input type="submit" name='btn' value="Delete answer"><a href="{{ url_for('add_answer_comment',
-                question_id= question_id, answer_id=answer['id'] ) }}">Add comment to this answer</a></form>
+                            <input type="submit" name='btn' value="Delete answer">
+                            <a href="{{ url_for('add_answer_comment', question_id= question_id,
+                             answer_id=answer['id'] ) }}">Add comment to this answer</a></form>
                     </div>
 
                     <div class="d">

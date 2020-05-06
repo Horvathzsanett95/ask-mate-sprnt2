@@ -63,6 +63,15 @@ def get_answers(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
+def get_accepted_by_answer_id(cursor: RealDictCursor, answer_id) -> list:
+    query = """
+        SELECT accepted
+        FROM answer WHERE id = %(aid)s;"""
+    cursor.execute(query, {'aid': answer_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_answer_by_question_id(cursor: RealDictCursor, question_id):
     query = """
         SELECT * FROM answer WHERE question_id = %(qid)s;"""
@@ -155,6 +164,15 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: int):
     query = """
         DELETE FROM answer WHERE id = %(aid)s;"""
     cursor.execute(query, {'aid': answer_id})
+    return
+
+
+@database_common.connection_handler
+def update_answer_by_id(cursor: RealDictCursor, answer_id: int, accepted):
+
+    query = """
+        UPDATE answer SET accepted = %(acp)s WHERE id = %(aid)s;"""
+    cursor.execute(query, {'acp': accepted, 'aid': answer_id})
     return
 
 

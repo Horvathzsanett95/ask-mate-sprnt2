@@ -87,7 +87,6 @@ def q_id(question_id):
                 answer_id = 0
             if session.get('user_id') == questioner:
                 unacceptable = False
-            print(answers)
             comments_questions = data_manager.get_question_comments(question_id)
             comments_answers = data_manager.get_answer_comments()
             question_user = data_manager.get_user_by_id(question['user_id'])  # this is to show who asked the question
@@ -101,7 +100,6 @@ def q_id(question_id):
         username = session['username']
         print(username)
         user_data = data_manager.get_user(username)
-        print("ezt kapd ki",)
         # print(user_data)
         if request.form["btn"] == "Send answer":
             answer = OrderedDict()
@@ -121,6 +119,18 @@ def q_id(question_id):
             return redirect(url_for('edit', question_id=question_id))
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/accept_answer/<answer_id>/<question_id>', methods = ['POST'])
+def accept_answer(answer_id, question_id):
+    accepted_dict = data_manager.get_accepted_by_answer_id(answer_id)
+    accepted_bool = accepted_dict[0]['accepted']
+    if accepted_bool is False:
+        accepted_bool = True
+    else:
+        accepted_bool = False
+    data_manager.update_answer_by_id(answer_id, accepted_bool)
+    return redirect(url_for('q_id', question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/delete', methods=['POST'])
