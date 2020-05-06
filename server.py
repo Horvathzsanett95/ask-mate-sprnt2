@@ -275,6 +275,7 @@ def user_profile():
 @app.route('/users')
 def users():
     all_user_data = data_manager.get_users()
+    print(all_user_data)
     return render_template("users.html", all_users=all_user_data)
 
 
