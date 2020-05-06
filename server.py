@@ -110,7 +110,27 @@ def q_id(question_id):
             return redirect(url_for('get_question_list'))
         elif request.form['btn'] == "Edit question":
             return redirect(url_for('edit', question_id=question_id))
-
+        elif request.method == 'POST':
+            username = session['username']
+            user_data = data_manager.get_user(username)
+            if request.form["btn"] == "Send answer":
+                answer = OrderedDict()
+                answer['submission_time'] = datetime.now()
+                answer['vote_number'] =	0
+                answer['question_id'] = question_id
+                answer['message'] = request.form.get('comment')
+                answer['image'] = None
+                answer['user_id'] = user_data['id']
+                data_manager.add_answer(answer)
+                return redirect(url_for('get_question_list'))
+            elif request.form['btn'] == "Delete question":
+                data_manager.delete_question(question_id)
+                data_manager.delete_answer(question_id)
+                return redirect(url_for('get_question_list'))
+            elif request.form['btn'] == "Edit question":
+                return redirect(url_for('edit', question_id=question_id))
+        else:
+            return redirect(url_for('login'))
 
 @app.route('/answer/<answer_id>/delete', methods=['POST'])
 def delete_answer(answer_id):
@@ -256,6 +276,7 @@ def user_profile():
 @app.route('/users')
 def users():
     all_user_data = data_manager.get_users()
+    print(all_user_data)
     return render_template("users.html", all_users=all_user_data)
 
 
