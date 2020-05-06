@@ -98,7 +98,6 @@ def q_id(question_id):
                                    user_name=session.get('username'), question_user=q_user, a_accepted=False)
     elif request.method == 'POST':
         username = session['username']
-        print(username)
         user_data = data_manager.get_user(username)
         # print(user_data)
         if request.form["btn"] == "Send answer":
