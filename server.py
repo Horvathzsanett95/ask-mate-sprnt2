@@ -72,13 +72,14 @@ def get_question_list():
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
 def q_id(question_id):
     question = data_manager.get_question_by_id(question_id)
-    questioner = data_manager.get_questioner(question_id)
+    # questioner = data_manager.get_questioner(question_id)
+    questioner = question['user_id']
     if request.method == 'GET':
         if 'username' in session:
             unacceptable = True
             message = question['message']
             title = question['title']
-            # question_id = question['id']  #???  question_id megvan parameterben
+            question_id = question['id']  #???  question_id megvan parameterben
             answers = data_manager.get_answer_by_question_id(question_id)
             if answers:
                 answer_id = answers[0]['id']
@@ -86,35 +87,40 @@ def q_id(question_id):
                 answer_id = 0
             if session.get('user_id') == questioner:
                 unacceptable = False
+            print(answers)
             comments_questions = data_manager.get_question_comments(question_id)
             comments_answers = data_manager.get_answer_comments()
-            print(comments_answers)
+            question_user = data_manager.get_user_by_id(question['user_id'])  # this is to show who asked the question
+            q_user = question_user[0]['user_name'] # this is to show who asked the question
+            # print(comments_answers)
             return render_template("question_id.html", message=message, title=title, answers=answers,
                                    question_id=question_id, comments_questions=comments_questions,
                                    comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
-                                   user_name=session.get('username'))
-        elif request.method == 'POST':
-            username = session['username']
-            user_data = data_manager.get_user(username)
-            if request.form["btn"] == "Send answer":
-                answer = OrderedDict()
-                answer['submission_time'] = datetime.now()
-                answer['vote_number'] =	0
-                answer['question_id'] = question_id
-                answer['message'] = request.form.get('comment')
-                answer['image'] = None
-                answer['user_id'] = user_data['id']
-                answer['accepted'] = None
-                data_manager.add_answer(answer)
-                return redirect(url_for('get_question_list'))
-            elif request.form['btn'] == "Delete question":
-                data_manager.delete_question(question_id)
-                data_manager.delete_answer(question_id)
-                return redirect(url_for('get_question_list'))
-            elif request.form['btn'] == "Edit question":
-                return redirect(url_for('edit', question_id=question_id))
-        else:
-            return redirect(url_for('login'))
+                                   user_name=session.get('username'), question_user=q_user, a_accepted=False)
+    elif request.method == 'POST':
+        username = session['username']
+        print(username)
+        user_data = data_manager.get_user(username)
+        print("ezt kapd ki",)
+        # print(user_data)
+        if request.form["btn"] == "Send answer":
+            answer = OrderedDict()
+            answer['submission_time'] = datetime.now()
+            answer['vote_number'] =	0
+            answer['question_id'] = question_id
+            answer['message'] = request.form.get('comment')
+            answer['image'] = None
+            answer['user_id'] = user_data['id']
+            data_manager.add_answer(answer)
+            return redirect(url_for('get_question_list'))
+        elif request.form['btn'] == "Delete question":
+            data_manager.delete_question(question_id)
+            data_manager.delete_answer(question_id)
+            return redirect(url_for('get_question_list'))
+        elif request.form['btn'] == "Edit question":
+            return redirect(url_for('edit', question_id=question_id))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/answer/<answer_id>/delete', methods=['POST'])

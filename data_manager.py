@@ -5,10 +5,12 @@ import database_common
 
 
 @database_common.connection_handler
-def get_questions(cursor: RealDictCursor, order_by_col="submission_time", order="desc") -> list:
+def get_questions(cursor: RealDictCursor, order_by_col=2, order="asc") -> list:
     which = {
         'title': 5, 'submission_time': 2, 'message': 6, 'view_number': 3, 'vote_number': 4,
         None: 2}
+    if not order:
+        order = "desc"
     if order == "desc":
         query = """
             SELECT *
@@ -224,6 +226,16 @@ def get_user(cursor: RealDictCursor, username):
     return cursor.fetchone()
 
 
+@database_common.connection_handler
+def get_user_by_id(cursor: RealDictCursor, user_id):
+    query = """
+        SELECT user_name
+        FROM users
+        WHERE id = %(usi)s"""
+    cursor.execute(query, {'usi': user_id})
+    return cursor.fetchall()
+
+
 def verify_password(plain_text_password, hashed_pw):
     hashed_bytes_password = hashed_pw.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
@@ -287,16 +299,16 @@ def answer_number_by_user(cursor: RealDictCursor, user_id):
     cursor.execute(query, {'user_id': user_id})
     return cursor.fetchall()
 
-
-@database_common.connection_handler
-def get_questioner(cursor: RealDictCursor, answer_id):
-    query = """
-            SELECT question.user_id
-            FROM question inner join answer
-                on question.id = answer.question_id
-            WHERE answer.id = %(a_id)s;"""
-    cursor.execute(query, {'a_id': answer_id})
-    return cursor.fetchall()
+#
+# @database_common.connection_handler
+# def get_questioner(cursor: RealDictCursor, answer_id):
+#     query = """
+#             SELECT question.user_id
+#             FROM question inner join answer
+#                 on question.id = answer.question_id
+#             WHERE answer.id = %(a_id)s;"""
+#     cursor.execute(query, {'a_id': answer_id})
+#     return cursor.fetchall()
 
 
 @database_common.connection_handler
