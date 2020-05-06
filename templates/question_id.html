@@ -23,16 +23,17 @@
                 <div class="q">
                     <div class="r">
                         <p>{{ answer['message'] }}</p><span class="is_accepted">
-                            <input type="checkbox" name="accepted" id="accepted"
-                                    {% if unacceptable %}
-                                   disabled
-                                    {% endif %}
-                                    {% if answer['accepted'] %}
-                                   checked
-                                    {% endif %}>
-                            <label for="accepted">Accepted?</label>{{ answer['accepted'] }}</span>
+{#                            <input type="checkbox" name="accepted" id="accepted"#}
+{#                                    {% if unacceptable %}#}
+{#                                   disabled#}
+{#                                    {% endif %}#}
+{#                                    {% if answer['accepted'] %}#}
+{#                                   checked#}
+{#                                    {% endif %}>#}
+{#                            <label for="accepted">Accepted?</label></span>#}
                         <form action="{{ url_for('accept_answer', answer_id=answer['id'], question_id=question_id) }}" method="POST">
-                            <input type="submit" name="btn" value="Accept"></form>
+                            <input {%  if unacceptable  %} disabled="disabled" {% endif %}class="favourite styled" type="submit" name="btn" {% if answer['accepted'] == False %}
+                                   value="AcceptAnswer" {% else %} value="RevertAccepted" {% endif %}></form>
                     </div>
                     <div class="a">
                         <form action="{{ url_for('delete_answer', answer_id=answer['id']) }}" method="POST">
