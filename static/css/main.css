@@ -4,7 +4,7 @@
 }
 
 body {
-    background-image: url("background_try.jpg");
+    background-image: url("maybe.png"); /* url("background_try.jpg) */
     color: #000000 ;
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
 }
@@ -27,7 +27,7 @@ tbody {
 
 thead,
 tfoot {
-    background-color: #e795b9;
+    background-color: #cda1b4;
     color: #150101;
 }
 
@@ -62,7 +62,7 @@ th {
     flex: 1;
     margin: 20px;
     padding: 10px;
-    background-color: #e795b9;
+    background-color: #cda1b4;
 }
 
 .question_list_block {
