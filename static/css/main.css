@@ -4,7 +4,7 @@
 }
 
 body {
-    background-color: #ffdd84;
+    background-image: url("background_try.jpg");
     color: #000000 ;
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
 }
@@ -22,12 +22,12 @@ table {
 }
 
 tbody {
-    background-color: lightblue;
+    background-color: #e0ddce;
 }
 
 thead,
 tfoot {
-    background-color: #929a9e;
+    background-color: #e795b9;
     color: #150101;
 }
 
@@ -62,7 +62,7 @@ th {
     flex: 1;
     margin: 20px;
     padding: 10px;
-    background-color: #ffdd84;
+    background-color: #e795b9;
 }
 
 .question_list_block {
@@ -122,6 +122,7 @@ a:visited {
 
 a:link {
     text-decoration: none;
+    font-weight: bolder;
 }
 
 .styled {
@@ -146,7 +147,3 @@ a:link {
     background-color: rgb(189, 185, 175);
 }
 
-/*.styled:active {*/
-/*    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),*/
-/*                inset 2px 2px 3px rgba(0, 0, 0, .6);*/
-/*}*/
