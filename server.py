@@ -130,6 +130,8 @@ def accept_answer(answer_id, question_id):
     accepted_bool = accepted_dict[0]['accepted']
     if accepted_bool is False:
         accepted_bool = True
+        user_id = data_manager.get_userid_by_answer(answer_id)
+        data_manager.update_reputation(user_id[0]['user_id'], 15)
     else:
         accepted_bool = False
     data_manager.update_answer_by_id(answer_id, accepted_bool)
@@ -178,6 +180,8 @@ def add_question():
 @app.route("/question/<question_id>/vote_up", methods=['GET', 'POST'])
 def vote_question_up(question_id):
     vote_number = data_manager.get_vote_number(question_id)
+    user_id = data_manager.get_userid_by_question(question_id)
+    data_manager.update_reputation(user_id[0]['user_id'], 5)
     vote_number[0]['vote_number'] += 1
     data_manager.write_vote_number(question_id, vote_number[0]['vote_number'])
     return redirect('/list')
@@ -186,6 +190,8 @@ def vote_question_up(question_id):
 @app.route("/question/<question_id>/vote_down", methods=['GET', 'POST'])
 def vote_question_down(question_id):
     vote_number = data_manager.get_vote_number(question_id)
+    user_id = data_manager.get_userid_by_question(question_id)
+    data_manager.update_reputation(user_id[0]['user_id'], -5)
     vote_number[0]['vote_number'] -= 1
     data_manager.write_vote_number(question_id, vote_number[0]['vote_number'])
     return redirect('/list')
