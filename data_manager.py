@@ -355,3 +355,22 @@ def bind_answer(cursor: RealDictCursor):
             ORDER BY user_id"""
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_userid_by_question(cursor: RealDictCursor, question_id):
+    query = """
+                SELECT user_id
+                FROM question
+                WHERE id = %(question_id)s """
+    cursor.execute(query, {'question_id' : question_id})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def update_reputation(cursor: RealDictCursor, user_id, change):
+    query = """
+                UPDATE users 
+                SET reputation = reputation + %(change)s
+                WHERE id = %(id)s """
+    cursor.execute(query, {'id' : user_id, 'change' : change})
+    return
