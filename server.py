@@ -125,6 +125,8 @@ def accept_answer(answer_id, question_id):
     accepted_bool = accepted_dict[0]['accepted']
     if accepted_bool is False:
         accepted_bool = True
+        user_id = data_manager.get_userid_by_answer(answer_id)
+        data_manager.update_reputation(user_id[0]['user_id'], 15)
     else:
         accepted_bool = False
     data_manager.update_answer_by_id(answer_id, accepted_bool)

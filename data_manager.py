@@ -374,3 +374,13 @@ def update_reputation(cursor: RealDictCursor, user_id, change):
                 WHERE id = %(id)s """
     cursor.execute(query, {'id' : user_id, 'change' : change})
     return
+
+@database_common.connection_handler
+def get_userid_by_answer(cursor: RealDictCursor, answer_id):
+    query = """
+                SELECT user_id
+                FROM answer
+                WHERE id = %(answer_id)s """
+    cursor.execute(query, {'answer_id' : answer_id})
+    return cursor.fetchall()
+
