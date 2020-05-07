@@ -71,15 +71,19 @@ def get_question_list():
 
 @app.route("/list/<question_id>", methods=['GET', 'POST'])
 def q_id(question_id):
+    all_questions = data_manager.get_question_by_id(question_id)
+    view_number = all_questions['view_number']
+    view_number += 1
+    data_manager.update_visited(question_id, view_number)
+    print(view_number)
     question = data_manager.get_question_by_id(question_id)
-    # questioner = data_manager.get_questioner(question_id)
     questioner = question['user_id']
     if request.method == 'GET':
         if 'username' in session:
             unacceptable = True
             message = question['message']
             title = question['title']
-            question_id = question['id']  #???  question_id megvan parameterben
+            question_id = question['id']
             answers = data_manager.get_answer_by_question_id(question_id)
             if answers:
                 answer_id = answers[0]['id']
@@ -89,13 +93,13 @@ def q_id(question_id):
                 unacceptable = False
             comments_questions = data_manager.get_question_comments(question_id)
             comments_answers = data_manager.get_answer_comments()
-            question_user = data_manager.get_user_by_id(question['user_id'])  # this is to show who asked the question
-            q_user = question_user[0]['user_name'] # this is to show who asked the question
-            # print(comments_answers)
+            question_user = data_manager.get_user_by_id(question['user_id'])
+            q_user = question_user[0]['user_name']
             return render_template("question_id.html", message=message, title=title, answers=answers,
                                    question_id=question_id, comments_questions=comments_questions,
                                    comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
-                                   user_name=session.get('username'), question_user=q_user, a_accepted=False)
+                                   user_name=session.get('username'), question_user=q_user, a_accepted=False,
+                                   view_number=view_number)
     elif request.method == 'POST':
         username = session['username']
         user_data = data_manager.get_user(username)
