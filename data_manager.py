@@ -13,12 +13,16 @@ def get_questions(cursor: RealDictCursor, order_by_col=2, order="asc") -> list:
         order = "desc"
     if order == "desc":
         query = """
-            SELECT *
+            SELECT id, submission_time,
+            view_number, vote_number, title, message, 
+            image, user_id
             FROM question
             ORDER BY %(ceca)s DESC"""
     else:
         query = """
-            SELECT *
+            SELECT id, submission_time,
+            view_number, vote_number, title, message, 
+            image, user_id
             FROM question
             ORDER BY %(ceca)s"""
     cursor.execute(query, {'ceca': which[order_by_col]})
@@ -47,7 +51,9 @@ def write_vote_number(cursor: RealDictCursor, q_id: int, v_number):
 @database_common.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id):
     query = """
-        SELECT * FROM question WHERE id = %(qid)s;"""
+        SELECT id, to_char(submission_time, 'dd-Mon-YYYY hh:mm:ss') as submission_time,
+            view_number, vote_number, title, message, 
+            image, user_id FROM question WHERE id = %(qid)s;"""
     cursor.execute(query, {'qid': question_id})
     return cursor.fetchone()
 
@@ -127,7 +133,9 @@ def insert_registration(cursor: RealDictCursor, users: dict):
 @database_common.connection_handler
 def select_user_by_username(cursor: RealDictCursor, username):
     query = """
-            SELECT * FROM users WHERE user_name = %(username)s;"""
+            SELECT id, email, user_name, password, 
+            to_char(registration_time, 'dd-Mon-YYYY hh:mm:ss') as registration_time, 
+            reputation FROM users WHERE user_name = %(username)s;"""
     cursor.execute(query, {'username': username})
     return cursor.fetchall()
 
@@ -215,9 +223,11 @@ def write_comment_to_answer(cursor: RealDictCursor, a_id, s_time, ct, u_id):
 @database_common.connection_handler
 def get_latest_questions(cursor: RealDictCursor) -> list:
     query = """
-        SELECT *
+        SELECT id, submission_time,
+        view_number, vote_number, title, message, 
+        image, user_id
         FROM question
-        ORDER BY submission_time DESC LIMIT 5"""
+        ORDER BY 2 DESC LIMIT 5"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -237,7 +247,9 @@ def search_questions(cursor: RealDictCursor, s_t) -> list:
 @database_common.connection_handler
 def get_user(cursor: RealDictCursor, username):
     query = """
-        SELECT *
+        SELECT id, email, user_name, password, 
+            to_char(registration_time, 'dd-Mon-YYYY hh:mm:ss') as registration_time, 
+            reputation
         FROM users
         WHERE user_name = %(usern)s"""
     cursor.execute(query, {'usern': username})
@@ -270,7 +282,8 @@ def update_visited(cursor: RealDictCursor, q_id, view_number):
 @database_common.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
-        SELECT users.id, registration_time, user_name, 
+        SELECT users.id, to_char(registration_time, 'dd-Mon-YYYY hh:mm:ss') as registration_time,
+        user_name, 
         COUNT(DISTINCT question.id) AS question_count,
         COUNT(DISTINCT answer.id) AS answer_count,
         COUNT(DISTINCT comment.id) AS comment_count

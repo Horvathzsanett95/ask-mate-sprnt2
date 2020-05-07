@@ -84,6 +84,7 @@ def q_id(question_id):
             message = question['message']
             title = question['title']
             question_id = question['id']
+            submission_time = question['submission_time']
             answers = data_manager.get_answer_by_question_id(question_id)
             if answers:
                 answer_id = answers[0]['id']
@@ -99,7 +100,7 @@ def q_id(question_id):
                                    question_id=question_id, comments_questions=comments_questions,
                                    comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
                                    user_name=session.get('username'), question_user=q_user, a_accepted=False,
-                                   view_number=view_number)
+                                   view_number=view_number, submission_time=submission_time)
         else:
             return redirect(url_for('login'))
     elif request.method == 'POST':
