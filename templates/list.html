@@ -43,6 +43,7 @@
                 <thead>
                 <tr>
                     <th class="qid">ID</th>
+                    <th>Visited</th>
                     <th class="voted">Vote</th>
                     <th class="votes">no.</th>
                     <th>Title</th>
@@ -54,6 +55,7 @@
                     <tr>
                         <td class="quid"><a
                                 href="{{ url_for('q_id', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                        <td>{{ question['view_number'] }}</td>
                         <td class="voted"><a href="{{ url_for('vote_question_up', question_id=question['id']) }}">
                             <span style='font-size:15px;'>&#8657;</span>
                         </a><a href="{{ url_for('vote_question_down', question_id=question['id']) }}">

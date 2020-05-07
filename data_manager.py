@@ -260,6 +260,14 @@ def verify_password(plain_text_password, hashed_pw):
 
 
 @database_common.connection_handler
+def update_visited(cursor: RealDictCursor, q_id, view_number):
+    query = """
+        UPDATE question SET view_number = %(view_number)s
+        WHERE id = %(q_id)s"""
+    cursor.execute(query, {'view_number': view_number, 'q_id': q_id})
+
+
+@database_common.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
         SELECT users.id, registration_time, user_name, 
