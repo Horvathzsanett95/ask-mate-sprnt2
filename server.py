@@ -255,6 +255,7 @@ def user_profile():
         username = user_data[0]['user_name']
         user_id = data_manager.get_id_by_username(username)
         user_id = user_id[0]['id']
+        user_reputation = user_data[0]['reputation']
         question_data = data_manager.question_number_by_user(user_id)
         question_number = question_data[0]['count']
         answer_data = data_manager.answer_number_by_user(user_id)
@@ -270,7 +271,8 @@ def user_profile():
                                username=username,
                                question_number=question_number,
                                answer_number=answer_number, comment_per_user=comment_per_user,
-                               answer_per_user=answer_per_user, question_per_user=question_per_user, comment_number=comment_number)
+                               answer_per_user=answer_per_user, question_per_user=question_per_user, comment_number=comment_number,
+                               user_reputation=user_reputation)
 
 
 @app.route('/users')
