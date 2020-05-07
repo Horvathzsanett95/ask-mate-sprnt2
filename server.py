@@ -100,6 +100,8 @@ def q_id(question_id):
                                    comments_answers=comments_answers, answer_id=answer_id, unacceptable=unacceptable,
                                    user_name=session.get('username'), question_user=q_user, a_accepted=False,
                                    view_number=view_number)
+        else:
+            return redirect(url_for('login'))
     elif request.method == 'POST':
         username = session['username']
         user_data = data_manager.get_user(username)
@@ -119,11 +121,10 @@ def q_id(question_id):
             return redirect(url_for('get_question_list'))
         elif request.form['btn'] == "Edit question":
             return redirect(url_for('edit', question_id=question_id))
-    else:
-        return redirect(url_for('login'))
 
 
-@app.route('/accept_answer/<answer_id>/<question_id>', methods = ['POST'])
+
+@app.route('/accept_answer/<answer_id>/<question_id>', methods=['POST'])
 def accept_answer(answer_id, question_id):
     accepted_dict = data_manager.get_accepted_by_answer_id(answer_id)
     accepted_bool = accepted_dict[0]['accepted']
@@ -288,3 +289,4 @@ def users():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
